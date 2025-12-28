@@ -1,0 +1,33 @@
+{
+	"$schema": "https://schema.management.azure.com/schemas/2015-01-01/deploymentParameters.json#",
+	"contentVersion": "1.0.0.0",
+	"parameters": {
+		"factoryName": {
+			"value": "datafactorylearning-ws"
+		},
+		"LS_AZURE_DATA_LAKE_accountKey": {
+			"value": ""
+		},
+		"LS_SNOWFLAKE_V2_password": {
+			"value": ""
+		},
+		"LS_AZURE_DATA_LAKE_properties_typeProperties_url": {
+			"value": "https://mylearning1dl.dfs.core.windows.net/"
+		},
+		"LS_SNOWFLAKE_V2_properties_typeProperties_database": {
+			"value": "FIRST_DB"
+		},
+		"LS_SNOWFLAKE_V2_properties_typeProperties_role": {
+			"value": "ACCOUNTADMIN"
+		},
+		"LS_SNOWFLAKE_V2_properties_typeProperties_host": {
+			"value": "TBKOFHT-MTB84290.snowflakecomputing.com"
+		},
+		"containerUri": {
+			"value": ""
+		},
+		"containerSasToken": {
+			"value": ""
+		}
+	}
+}

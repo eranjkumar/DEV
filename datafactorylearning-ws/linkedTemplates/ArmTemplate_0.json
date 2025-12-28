@@ -1,0 +1,2580 @@
+{
+	"$schema": "http://schema.management.azure.com/schemas/2015-01-01/deploymentTemplate.json#",
+	"contentVersion": "1.0.0.0",
+	"parameters": {
+		"factoryName": {
+			"type": "string",
+			"metadata": "Data Factory name",
+			"defaultValue": "datafactorylearning-ws"
+		},
+		"LS_AZURE_DATA_LAKE_accountKey": {
+			"type": "secureString",
+			"metadata": "Secure string for 'accountKey' of 'LS_AZURE_DATA_LAKE'"
+		},
+		"LS_SNOWFLAKE_V2_password": {
+			"type": "secureString",
+			"metadata": "Secure string for 'password' of 'LS_SNOWFLAKE_V2'"
+		},
+		"LS_AZURE_DATA_LAKE_properties_typeProperties_url": {
+			"type": "string",
+			"defaultValue": "https://mylearning1dl.dfs.core.windows.net/"
+		},
+		"LS_SNOWFLAKE_V2_properties_typeProperties_database": {
+			"type": "string",
+			"defaultValue": "FIRST_DB"
+		},
+		"LS_SNOWFLAKE_V2_properties_typeProperties_role": {
+			"type": "string",
+			"defaultValue": "ACCOUNTADMIN"
+		},
+		"LS_SNOWFLAKE_V2_properties_typeProperties_host": {
+			"type": "string",
+			"defaultValue": "TBKOFHT-MTB84290.snowflakecomputing.com"
+		}
+	},
+	"variables": {
+		"factoryId": "[concat('Microsoft.DataFactory/factories/', parameters('factoryName'))]"
+	},
+	"resources": [
+		{
+			"name": "[concat(parameters('factoryName'), '/PL_ITEM_INVREAMENTAL_LOAD')]",
+			"type": "Microsoft.DataFactory/factories/pipelines",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"activities": [
+					{
+						"name": "Wait1",
+						"type": "Wait",
+						"dependsOn": [],
+						"userProperties": [],
+						"typeProperties": {
+							"waitTimeInSeconds": 1
+						}
+					}
+				],
+				"policy": {
+					"elapsedTimeMetric": {}
+				},
+				"annotations": [],
+				"lastPublishTime": "2025-12-26T12:43:36Z"
+			},
+			"dependsOn": []
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/PL_TESTING')]",
+			"type": "Microsoft.DataFactory/factories/pipelines",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"activities": [
+					{
+						"name": "Wait1",
+						"type": "Wait",
+						"dependsOn": [],
+						"userProperties": [],
+						"typeProperties": {
+							"waitTimeInSeconds": 1
+						}
+					}
+				],
+				"policy": {
+					"elapsedTimeMetric": {}
+				},
+				"annotations": []
+			},
+			"dependsOn": []
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/LS_AZURE_DATA_LAKE')]",
+			"type": "Microsoft.DataFactory/factories/linkedServices",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"annotations": [],
+				"type": "AzureBlobFS",
+				"typeProperties": {
+					"url": "[parameters('LS_AZURE_DATA_LAKE_properties_typeProperties_url')]",
+					"accountKey": {
+						"type": "SecureString",
+						"value": "[parameters('LS_AZURE_DATA_LAKE_accountKey')]"
+					}
+				}
+			},
+			"dependsOn": []
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/TESTIR')]",
+			"type": "Microsoft.DataFactory/factories/integrationRuntimes",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"type": "Managed",
+				"typeProperties": {
+					"computeProperties": {
+						"location": "AutoResolve",
+						"dataFlowProperties": {
+							"computeType": "General",
+							"coreCount": 8,
+							"timeToLive": 10,
+							"cleanup": false,
+							"customProperties": []
+						}
+					}
+				}
+			},
+			"dependsOn": []
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/integrationRuntime1')]",
+			"type": "Microsoft.DataFactory/factories/integrationRuntimes",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"type": "Managed",
+				"typeProperties": {
+					"computeProperties": {
+						"location": "AutoResolve",
+						"dataFlowProperties": {
+							"computeType": "General",
+							"coreCount": 8,
+							"timeToLive": 10,
+							"cleanup": false,
+							"customProperties": []
+						}
+					}
+				}
+			},
+			"dependsOn": []
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/CP_ALL_BRONZE')]",
+			"type": "Microsoft.DataFactory/factories/datasets",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"linkedServiceName": {
+					"referenceName": "LS_AZURE_DATA_LAKE",
+					"type": "LinkedServiceReference"
+				},
+				"annotations": [],
+				"type": "Json",
+				"typeProperties": {
+					"location": {
+						"type": "AzureBlobFSLocation",
+						"fileSystem": "bronze"
+					}
+				},
+				"schema": {}
+			},
+			"dependsOn": [
+				"[concat(variables('factoryId'), '/linkedServices/LS_AZURE_DATA_LAKE')]"
+			]
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/DC_CP_ALL_JSON')]",
+			"type": "Microsoft.DataFactory/factories/datasets",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"linkedServiceName": {
+					"referenceName": "LS_AZURE_DATA_LAKE",
+					"type": "LinkedServiceReference"
+				},
+				"parameters": {
+					"P_FILE_NAME": {
+						"type": "string"
+					}
+				},
+				"annotations": [],
+				"type": "Json",
+				"typeProperties": {
+					"location": {
+						"type": "AzureBlobFSLocation",
+						"fileName": {
+							"value": "@dataset().P_FILE_NAME",
+							"type": "Expression"
+						},
+						"fileSystem": "raw"
+					}
+				},
+				"schema": {
+					"type": "object",
+					"properties": {
+						"constructorId": {
+							"type": "integer"
+						},
+						"constructorRef": {
+							"type": "string"
+						},
+						"name": {
+							"type": "string"
+						},
+						"nationality": {
+							"type": "string"
+						},
+						"url": {
+							"type": "string"
+						}
+					}
+				}
+			},
+			"dependsOn": [
+				"[concat(variables('factoryId'), '/linkedServices/LS_AZURE_DATA_LAKE')]"
+			]
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/DS_ALL_FILE_IN_RAW')]",
+			"type": "Microsoft.DataFactory/factories/datasets",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"linkedServiceName": {
+					"referenceName": "LS_AZURE_DATA_LAKE",
+					"type": "LinkedServiceReference"
+				},
+				"annotations": [],
+				"type": "DelimitedText",
+				"typeProperties": {
+					"location": {
+						"type": "AzureBlobFSLocation",
+						"fileSystem": "raw"
+					},
+					"columnDelimiter": ",",
+					"escapeChar": "\\",
+					"firstRowAsHeader": true,
+					"quoteChar": "\""
+				},
+				"schema": [
+					{
+						"name": "ID",
+						"type": "String"
+					},
+					{
+						"name": "SOURCE_SYSTEM_CODE",
+						"type": "String"
+					},
+					{
+						"name": "SOURCE_CMG_ID",
+						"type": "String"
+					},
+					{
+						"name": "SOURCE_PLANT_CODE",
+						"type": "String"
+					},
+					{
+						"name": "SOURCE_STORAGE_LOCATION",
+						"type": "String"
+					},
+					{
+						"name": "SOURCE_ITEM_CODE",
+						"type": "String"
+					},
+					{
+						"name": "SOURCE_BATCH_NO",
+						"type": "String"
+					},
+					{
+						"name": "SOURCE_ITEM_TYPE",
+						"type": "String"
+					},
+					{
+						"name": "BATCH_STATUS_KEY",
+						"type": "String"
+					},
+					{
+						"name": "BATCH_STOCK_TYPE",
+						"type": "String"
+					},
+					{
+						"name": "QUANTITY",
+						"type": "String"
+					},
+					{
+						"name": "UNIT_OF_MEASURE",
+						"type": "String"
+					},
+					{
+						"name": "LOADED_FLAG",
+						"type": "String"
+					},
+					{
+						"name": "AI_UOM_QUANTITY",
+						"type": "String"
+					},
+					{
+						"name": "ACTIVE_INGREDIENT_UOM",
+						"type": "String"
+					},
+					{
+						"name": "QC_BATCH_POTENCY",
+						"type": "String"
+					},
+					{
+						"name": "DEFAULT_BATCH_POTENCY",
+						"type": "String"
+					},
+					{
+						"name": "VENDOR_CODE",
+						"type": "String"
+					},
+					{
+						"name": "BATCH_STATUS",
+						"type": "String"
+					},
+					{
+						"name": "ERP_CREATION_DATE",
+						"type": "String"
+					},
+					{
+						"name": "EXTERNAL_SYSTEM_CREATION_DATE",
+						"type": "String"
+					},
+					{
+						"name": "AVAILABLE_DATE",
+						"type": "String"
+					},
+					{
+						"name": "MIC_PROCESS_DATE",
+						"type": "String"
+					},
+					{
+						"name": "EXPIRY_DATE",
+						"type": "String"
+					}
+				]
+			},
+			"dependsOn": [
+				"[concat(variables('factoryId'), '/linkedServices/LS_AZURE_DATA_LAKE')]"
+			]
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/DS_ALL_LKP_ADLS')]",
+			"type": "Microsoft.DataFactory/factories/datasets",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"linkedServiceName": {
+					"referenceName": "LS_AZURE_DATA_LAKE",
+					"type": "LinkedServiceReference"
+				},
+				"parameters": {
+					"FILE_NAME": {
+						"type": "string"
+					}
+				},
+				"annotations": [],
+				"type": "DelimitedText",
+				"typeProperties": {
+					"location": {
+						"type": "AzureBlobFSLocation",
+						"fileName": {
+							"value": "@dataset().FILE_NAME",
+							"type": "Expression"
+						},
+						"folderPath": "LKP_FILE",
+						"fileSystem": "raw"
+					},
+					"columnDelimiter": ",",
+					"escapeChar": "\\",
+					"firstRowAsHeader": true,
+					"quoteChar": "\""
+				},
+				"schema": []
+			},
+			"dependsOn": [
+				"[concat(variables('factoryId'), '/linkedServices/LS_AZURE_DATA_LAKE')]"
+			]
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/DS_ETL_LAST_RUN')]",
+			"type": "Microsoft.DataFactory/factories/datasets",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"linkedServiceName": {
+					"referenceName": "LS_AZURE_DATA_LAKE",
+					"type": "LinkedServiceReference"
+				},
+				"annotations": [],
+				"type": "Json",
+				"typeProperties": {
+					"location": {
+						"type": "AzureBlobFSLocation",
+						"fileName": "ETL_LAST_RUN.json",
+						"folderPath": "PARAM",
+						"fileSystem": "bronze"
+					}
+				},
+				"schema": {
+					"type": "object",
+					"properties": {
+						"LAST_LOADED_DATE": {
+							"type": "string"
+						}
+					}
+				}
+			},
+			"dependsOn": [
+				"[concat(variables('factoryId'), '/linkedServices/LS_AZURE_DATA_LAKE')]"
+			]
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/DS_LATEST_FILES')]",
+			"type": "Microsoft.DataFactory/factories/datasets",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"linkedServiceName": {
+					"referenceName": "LS_AZURE_DATA_LAKE",
+					"type": "LinkedServiceReference"
+				},
+				"parameters": {
+					"SRS_FILE_NAME": {
+						"type": "string"
+					}
+				},
+				"annotations": [],
+				"type": "DelimitedText",
+				"typeProperties": {
+					"location": {
+						"type": "AzureBlobFSLocation",
+						"fileName": {
+							"value": "@dataset().SRS_FILE_NAME",
+							"type": "Expression"
+						},
+						"fileSystem": "raw"
+					},
+					"columnDelimiter": ",",
+					"escapeChar": "\\",
+					"firstRowAsHeader": true,
+					"quoteChar": "\""
+				},
+				"schema": [
+					{
+						"name": "ID",
+						"type": "String"
+					},
+					{
+						"name": "SOURCE_SYSTEM_CODE",
+						"type": "String"
+					},
+					{
+						"name": "SOURCE_CMG_ID",
+						"type": "String"
+					},
+					{
+						"name": "SOURCE_PLANT_CODE",
+						"type": "String"
+					},
+					{
+						"name": "SOURCE_STORAGE_LOCATION",
+						"type": "String"
+					},
+					{
+						"name": "SOURCE_ITEM_CODE",
+						"type": "String"
+					},
+					{
+						"name": "SOURCE_BATCH_NO",
+						"type": "String"
+					},
+					{
+						"name": "SOURCE_ITEM_TYPE",
+						"type": "String"
+					},
+					{
+						"name": "BATCH_STATUS_KEY",
+						"type": "String"
+					},
+					{
+						"name": "BATCH_STOCK_TYPE",
+						"type": "String"
+					},
+					{
+						"name": "QUANTITY",
+						"type": "String"
+					},
+					{
+						"name": "UNIT_OF_MEASURE",
+						"type": "String"
+					},
+					{
+						"name": "LOADED_FLAG",
+						"type": "String"
+					},
+					{
+						"name": "AI_UOM_QUANTITY",
+						"type": "String"
+					},
+					{
+						"name": "ACTIVE_INGREDIENT_UOM",
+						"type": "String"
+					},
+					{
+						"name": "QC_BATCH_POTENCY",
+						"type": "String"
+					},
+					{
+						"name": "DEFAULT_BATCH_POTENCY",
+						"type": "String"
+					},
+					{
+						"name": "VENDOR_CODE",
+						"type": "String"
+					},
+					{
+						"name": "BATCH_STATUS",
+						"type": "String"
+					},
+					{
+						"name": "ERP_CREATION_DATE",
+						"type": "String"
+					},
+					{
+						"name": "EXTERNAL_SYSTEM_CREATION_DATE",
+						"type": "String"
+					},
+					{
+						"name": "AVAILABLE_DATE",
+						"type": "String"
+					},
+					{
+						"name": "MIC_PROCESS_DATE",
+						"type": "String"
+					},
+					{
+						"name": "EXPIRY_DATE",
+						"type": "String"
+					}
+				]
+			},
+			"dependsOn": [
+				"[concat(variables('factoryId'), '/linkedServices/LS_AZURE_DATA_LAKE')]"
+			]
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/DS_LATEST_FILE_BRONZE')]",
+			"type": "Microsoft.DataFactory/factories/datasets",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"linkedServiceName": {
+					"referenceName": "LS_AZURE_DATA_LAKE",
+					"type": "LinkedServiceReference"
+				},
+				"annotations": [],
+				"type": "DelimitedText",
+				"typeProperties": {
+					"location": {
+						"type": "AzureBlobFSLocation",
+						"folderPath": "TEMP",
+						"fileSystem": "bronze"
+					},
+					"columnDelimiter": ",",
+					"escapeChar": "\\",
+					"firstRowAsHeader": true,
+					"quoteChar": "\""
+				},
+				"schema": []
+			},
+			"dependsOn": [
+				"[concat(variables('factoryId'), '/linkedServices/LS_AZURE_DATA_LAKE')]"
+			]
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/DS_LIST_FILE_BRONZE')]",
+			"type": "Microsoft.DataFactory/factories/datasets",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"linkedServiceName": {
+					"referenceName": "LS_AZURE_DATA_LAKE",
+					"type": "LinkedServiceReference"
+				},
+				"annotations": [],
+				"type": "Parquet",
+				"typeProperties": {
+					"location": {
+						"type": "AzureBlobFSLocation",
+						"fileSystem": "bronze"
+					},
+					"compressionCodec": "snappy"
+				},
+				"schema": [
+					{
+						"name": "ITEMID",
+						"type": "UTF8"
+					},
+					{
+						"name": "ITEMDESCRIPTION",
+						"type": "UTF8"
+					},
+					{
+						"name": "ITEMTYPE",
+						"type": "UTF8"
+					},
+					{
+						"name": "LEVEL4MEMBERID",
+						"type": "UTF8"
+					},
+					{
+						"name": "LEVEL4MEMBERDESCRIPTION",
+						"type": "UTF8"
+					},
+					{
+						"name": "LEVEL3MEMBERID",
+						"type": "UTF8"
+					},
+					{
+						"name": "LEVEL3MEMBERDESCRIPTION",
+						"type": "UTF8"
+					},
+					{
+						"name": "LEVEL2MEMBERID",
+						"type": "UTF8"
+					},
+					{
+						"name": "LEVEL2MEMBERDESCRIPTION",
+						"type": "UTF8"
+					},
+					{
+						"name": "LEVEL1MEMBERID",
+						"type": "UTF8"
+					},
+					{
+						"name": "LEVEL1MEMBERDESCRIPTION",
+						"type": "UTF8"
+					},
+					{
+						"name": "ATTRSUPPLYTYPE",
+						"type": "UTF8"
+					},
+					{
+						"name": "ATTRORIGITEM",
+						"type": "UTF8"
+					},
+					{
+						"name": "ATTRVERSION",
+						"type": "UTF8"
+					},
+					{
+						"name": "UNITCOST",
+						"type": "DOUBLE"
+					},
+					{
+						"name": "ISNEWITEM",
+						"type": "BOOLEAN"
+					},
+					{
+						"name": "ITEMCLASS",
+						"type": "UTF8"
+					},
+					{
+						"name": "HANDLINGINSTRUCTIONCODE",
+						"type": "UTF8"
+					},
+					{
+						"name": "ITEMFAMILYGROUP",
+						"type": "UTF8"
+					},
+					{
+						"name": "VOLUME",
+						"type": "DECIMAL",
+						"precision": 12,
+						"scale": 4
+					},
+					{
+						"name": "UNITSPERPALLET",
+						"type": "DECIMAL",
+						"precision": 12,
+						"scale": 4
+					},
+					{
+						"name": "ITEMPRIORITYATTRIB",
+						"type": "UTF8"
+					},
+					{
+						"name": "UNITCONV1",
+						"type": "DOUBLE"
+					},
+					{
+						"name": "UNITCONV2",
+						"type": "DOUBLE"
+					},
+					{
+						"name": "UNITCONV3",
+						"type": "DOUBLE"
+					},
+					{
+						"name": "UNITCONV4",
+						"type": "DOUBLE"
+					},
+					{
+						"name": "GROSSWEIGHT",
+						"type": "DECIMAL",
+						"precision": 12,
+						"scale": 4
+					},
+					{
+						"name": "BASEUOM",
+						"type": "UTF8"
+					},
+					{
+						"name": "USEDYNDEPFROMITEMLOCDEPLOYMENTPARAM",
+						"type": "BOOLEAN"
+					},
+					{
+						"name": "USETRANSPORTCOSTFROMDYNDEPSRC",
+						"type": "BOOLEAN"
+					},
+					{
+						"name": "DYNDEPDECIMALS",
+						"type": "DECIMAL",
+						"precision": 38,
+						"scale": 0
+					},
+					{
+						"name": "DYNDEPOPTION",
+						"type": "DECIMAL",
+						"precision": 38,
+						"scale": 0
+					},
+					{
+						"name": "DYNDEPPUSHOPTION",
+						"type": "DECIMAL",
+						"precision": 38,
+						"scale": 0
+					},
+					{
+						"name": "DYNDEPQTY",
+						"type": "DOUBLE"
+					},
+					{
+						"name": "OPTIONCLASS",
+						"type": "UTF8"
+					},
+					{
+						"name": "ITEMSOURCINGSTRATEGY",
+						"type": "UTF8"
+					},
+					{
+						"name": "OPTIONS",
+						"type": "UTF8"
+					},
+					{
+						"name": "DISABLENETTINGPLANNING",
+						"type": "UTF8"
+					},
+					{
+						"name": "ISSHORTLIFECYCLEITEM",
+						"type": "BOOLEAN"
+					},
+					{
+						"name": "ISPARENTITEM",
+						"type": "BOOLEAN"
+					},
+					{
+						"name": "UDC_TA",
+						"type": "UTF8"
+					},
+					{
+						"name": "UDC_ACTIVEPRINCIPLE",
+						"type": "UTF8"
+					},
+					{
+						"name": "UDC_CONTAINER",
+						"type": "UTF8"
+					},
+					{
+						"name": "UDC_MARKET",
+						"type": "UTF8"
+					},
+					{
+						"name": "UDC_MFGSOURCE",
+						"type": "UTF8"
+					},
+					{
+						"name": "UDC_PACKSIZE",
+						"type": "DECIMAL",
+						"precision": 12,
+						"scale": 0
+					},
+					{
+						"name": "UDC_PHARMAFORM",
+						"type": "UTF8"
+					},
+					{
+						"name": "UDC_PRODUCTTYPE",
+						"type": "UTF8"
+					},
+					{
+						"name": "UDC_ITEMSTATUS",
+						"type": "UTF8"
+					},
+					{
+						"name": "UDC_EQUNITS",
+						"type": "DECIMAL",
+						"precision": 30,
+						"scale": 2
+					},
+					{
+						"name": "UDC_BRAND",
+						"type": "UTF8"
+					},
+					{
+						"name": "UDC_TADESCR",
+						"type": "UTF8"
+					},
+					{
+						"name": "UDC_BRANDDESCR",
+						"type": "UTF8"
+					},
+					{
+						"name": "UDC_STRENGTHDESCR",
+						"type": "UTF8"
+					},
+					{
+						"name": "UDC_MP_RELEVANT",
+						"type": "UTF8"
+					},
+					{
+						"name": "UDC_FAMILY",
+						"type": "UTF8"
+					},
+					{
+						"name": "UDC_CORPDESCR",
+						"type": "UTF8"
+					},
+					{
+						"name": "UDC_SOPSW",
+						"type": "BOOLEAN"
+					},
+					{
+						"name": "UDC_TPREGION",
+						"type": "UTF8"
+					},
+					{
+						"name": "UDC_DIVISION",
+						"type": "UTF8"
+					},
+					{
+						"name": "UDC_MULTIDEST",
+						"type": "BOOLEAN"
+					},
+					{
+						"name": "UDC_MULTISOURCE",
+						"type": "BOOLEAN"
+					},
+					{
+						"name": "UDC_BRANDPRIO",
+						"type": "DECIMAL",
+						"precision": 22,
+						"scale": 0
+					},
+					{
+						"name": "UDC_ITEMEXCEPTION",
+						"type": "DECIMAL",
+						"precision": 22,
+						"scale": 0
+					},
+					{
+						"name": "UDC_PACK_SITE",
+						"type": "UTF8"
+					},
+					{
+						"name": "UDC_PROD_SITE",
+						"type": "UTF8"
+					},
+					{
+						"name": "UDC_API_SITE",
+						"type": "UTF8"
+					},
+					{
+						"name": "UDC_GPSNAME",
+						"type": "UTF8"
+					},
+					{
+						"name": "UDC_GROUPING",
+						"type": "UTF8"
+					},
+					{
+						"name": "UDC_NBUNITSPERHNDLG",
+						"type": "DECIMAL",
+						"precision": 12,
+						"scale": 0
+					},
+					{
+						"name": "UDC_NBHNDLGPERPALLET",
+						"type": "DECIMAL",
+						"precision": 12,
+						"scale": 0
+					},
+					{
+						"name": "UDC_NBHNDLGPERLAYER",
+						"type": "DECIMAL",
+						"precision": 12,
+						"scale": 0
+					},
+					{
+						"name": "UDC_PACKMODULE",
+						"type": "UTF8"
+					},
+					{
+						"name": "UDC_STORAGECONDITION",
+						"type": "UTF8"
+					},
+					{
+						"name": "UDC_GRP1",
+						"type": "UTF8"
+					},
+					{
+						"name": "UDC_GRP2",
+						"type": "UTF8"
+					},
+					{
+						"name": "UDC_GRP3",
+						"type": "UTF8"
+					},
+					{
+						"name": "UDC_GRP4",
+						"type": "UTF8"
+					},
+					{
+						"name": "UDC_CREATEDBY",
+						"type": "UTF8"
+					},
+					{
+						"name": "UDC_CREATIONDATE",
+						"type": "DATE"
+					},
+					{
+						"name": "UDC_LASTUPDATEDATE",
+						"type": "DATE"
+					},
+					{
+						"name": "UDC_LASTUPDATEDBY",
+						"type": "UTF8"
+					},
+					{
+						"name": "UDC_FACTOR",
+						"type": "DECIMAL",
+						"precision": 14,
+						"scale": 4
+					},
+					{
+						"name": "UDC_ACTIVITY",
+						"type": "UTF8"
+					},
+					{
+						"name": "UDC_CRITICITY",
+						"type": "DECIMAL",
+						"precision": 30,
+						"scale": 2
+					},
+					{
+						"name": "UDC_NPISW",
+						"type": "BOOLEAN"
+					},
+					{
+						"name": "UDC_SIZETOBRAND",
+						"type": "DECIMAL",
+						"precision": 18,
+						"scale": 6
+					},
+					{
+						"name": "UDC_ARCPROJSTATICSW",
+						"type": "BOOLEAN"
+					},
+					{
+						"name": "UDC_PACKSPERPALLET",
+						"type": "DECIMAL",
+						"precision": 38,
+						"scale": 5
+					},
+					{
+						"name": "UDC_RESTRICT_SW",
+						"type": "BOOLEAN"
+					},
+					{
+						"name": "UDC_STACKINGPERPACK",
+						"type": "DECIMAL",
+						"precision": 38,
+						"scale": 0
+					},
+					{
+						"name": "UDC_NBTABSPERBLISTER",
+						"type": "DECIMAL",
+						"precision": 22,
+						"scale": 0
+					},
+					{
+						"name": "UDC_MTS_MTO",
+						"type": "DECIMAL",
+						"precision": 30,
+						"scale": 2
+					},
+					{
+						"name": "UDC_NEW",
+						"type": "BOOLEAN"
+					},
+					{
+						"name": "UDC_STRENGTH",
+						"type": "UTF8"
+					},
+					{
+						"name": "UDC_DOSETOMCG",
+						"type": "DECIMAL",
+						"precision": 38,
+						"scale": 10
+					},
+					{
+						"name": "UDC_DOSETOIU",
+						"type": "DECIMAL",
+						"precision": 38,
+						"scale": 0
+					},
+					{
+						"name": "UDC_DMDUNITLEVEL",
+						"type": "DECIMAL",
+						"precision": 38,
+						"scale": 0
+					},
+					{
+						"name": "UDC_BOXTODOSES",
+						"type": "DECIMAL",
+						"precision": 38,
+						"scale": 0
+					},
+					{
+						"name": "UDC_PACKSIZEDESCR",
+						"type": "UTF8"
+					},
+					{
+						"name": "UDC_FAMILYGRPDESCR",
+						"type": "UTF8"
+					},
+					{
+						"name": "UDC_LOCALPRODUCTSW",
+						"type": "UTF8"
+					},
+					{
+						"name": "UDC_SIZETOSTRENGTH",
+						"type": "DECIMAL",
+						"precision": 38,
+						"scale": 10
+					},
+					{
+						"name": "UDC_LRPDUMMY",
+						"type": "BOOLEAN"
+					},
+					{
+						"name": "UDC_LRPPRODLEVEL",
+						"type": "UTF8"
+					},
+					{
+						"name": "UDC_LRPSCOPE",
+						"type": "BOOLEAN"
+					},
+					{
+						"name": "UDC_GPH",
+						"type": "UTF8"
+					},
+					{
+						"name": "UDC_GPHDESCR",
+						"type": "UTF8"
+					},
+					{
+						"name": "UDC_PACKAGINGSTYLE",
+						"type": "UTF8"
+					},
+					{
+						"name": "UDC_ACTIVEINGR",
+						"type": "UTF8"
+					},
+					{
+						"name": "UDC_SUPPLIERNAME",
+						"type": "UTF8"
+					},
+					{
+						"name": "UDC_PRODCONFIG",
+						"type": "UTF8"
+					},
+					{
+						"name": "UDC_PRODMACROCONFIG",
+						"type": "UTF8"
+					},
+					{
+						"name": "UDC_MACROCONFIGDESCR",
+						"type": "UTF8"
+					},
+					{
+						"name": "UDC_DMDUNITEXCEPTION",
+						"type": "DECIMAL",
+						"precision": 38,
+						"scale": 0
+					},
+					{
+						"name": "UDC_PROJECTREF",
+						"type": "UTF8"
+					},
+					{
+						"name": "UDC_SECPACKPERBOX",
+						"type": "DECIMAL",
+						"precision": 38,
+						"scale": 10
+					},
+					{
+						"name": "UDC_PACKERMFG",
+						"type": "UTF8"
+					},
+					{
+						"name": "UDC_GAUSSGLOBALCODE",
+						"type": "UTF8"
+					},
+					{
+						"name": "UDC_BFDP",
+						"type": "UTF8"
+					},
+					{
+						"name": "UDC_GPS",
+						"type": "UTF8"
+					},
+					{
+						"name": "UDC_SUPMFG",
+						"type": "UTF8"
+					},
+					{
+						"name": "UDC_PACKMFG",
+						"type": "UTF8"
+					},
+					{
+						"name": "UDC_ACTIVE",
+						"type": "BOOLEAN"
+					},
+					{
+						"name": "UDC_GRPDVLP",
+						"type": "UTF8"
+					},
+					{
+						"name": "UDC_TABLET_SHAPE",
+						"type": "UTF8"
+					},
+					{
+						"name": "UDC_TXF_CONSTRAINED_DEMAND",
+						"type": "BOOLEAN"
+					},
+					{
+						"name": "UDC_SBU_YPLUS1",
+						"type": "UTF8"
+					},
+					{
+						"name": "UDC_SBU_DESC_YPLUS1",
+						"type": "UTF8"
+					},
+					{
+						"name": "UDC_GBU_YPLUS1",
+						"type": "UTF8"
+					},
+					{
+						"name": "UDC_BUSINESS_LINE",
+						"type": "UTF8"
+					},
+					{
+						"name": "UDC_SCM_CATEGORY",
+						"type": "UTF8"
+					},
+					{
+						"name": "UDC_DOSAGE_UOM",
+						"type": "UTF8"
+					},
+					{
+						"name": "UDC_API_DOSAGE",
+						"type": "DECIMAL",
+						"precision": 38,
+						"scale": 10
+					},
+					{
+						"name": "UDC_PLNBUSLINE",
+						"type": "UTF8"
+					},
+					{
+						"name": "UDC_PLNBUSFIELD",
+						"type": "UTF8"
+					},
+					{
+						"name": "UDC_PLNBUSUNIT",
+						"type": "UTF8"
+					},
+					{
+						"name": "UDC_BUSINESS_FIELD",
+						"type": "UTF8"
+					},
+					{
+						"name": "UDC_BUSINESS_UNIT",
+						"type": "UTF8"
+					},
+					{
+						"name": "UDC_SCCATEGORY",
+						"type": "UTF8"
+					},
+					{
+						"name": "UDC_DEVICETYPE",
+						"type": "UTF8"
+					},
+					{
+						"name": "UDC_BUSDIV",
+						"type": "UTF8"
+					},
+					{
+						"name": "UDC_ISDUMMY",
+						"type": "UTF8"
+					},
+					{
+						"name": "UDC_FCSTTXFSTOP",
+						"type": "DATE"
+					},
+					{
+						"name": "UDC_UOM",
+						"type": "UTF8"
+					},
+					{
+						"name": "UDC_LOCAL_BRAND",
+						"type": "UTF8"
+					},
+					{
+						"name": "UDC_UNITPERPALLET",
+						"type": "DECIMAL",
+						"precision": 38,
+						"scale": 10
+					},
+					{
+						"name": "UDC_WEIGHT",
+						"type": "DECIMAL",
+						"precision": 38,
+						"scale": 10
+					}
+				]
+			},
+			"dependsOn": [
+				"[concat(variables('factoryId'), '/linkedServices/LS_AZURE_DATA_LAKE')]"
+			]
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/DS_LIST_FILE_RAW')]",
+			"type": "Microsoft.DataFactory/factories/datasets",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"linkedServiceName": {
+					"referenceName": "LS_AZURE_DATA_LAKE",
+					"type": "LinkedServiceReference"
+				},
+				"parameters": {
+					"FILE_NAME": {
+						"type": "string"
+					}
+				},
+				"annotations": [],
+				"type": "Json",
+				"typeProperties": {
+					"location": {
+						"type": "AzureBlobFSLocation",
+						"fileName": {
+							"value": "@dataset().FILE_NAME",
+							"type": "Expression"
+						},
+						"fileSystem": "raw"
+					}
+				},
+				"schema": {
+					"type": "object",
+					"properties": {
+						"constructorId": {
+							"type": "integer"
+						},
+						"constructorRef": {
+							"type": "string"
+						},
+						"name": {
+							"type": "string"
+						},
+						"nationality": {
+							"type": "string"
+						},
+						"url": {
+							"type": "string"
+						}
+					}
+				}
+			},
+			"dependsOn": [
+				"[concat(variables('factoryId'), '/linkedServices/LS_AZURE_DATA_LAKE')]"
+			]
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/DS_LIST_FILE_SILVER')]",
+			"type": "Microsoft.DataFactory/factories/datasets",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"linkedServiceName": {
+					"referenceName": "LS_AZURE_DATA_LAKE",
+					"type": "LinkedServiceReference"
+				},
+				"annotations": [],
+				"type": "Parquet",
+				"typeProperties": {
+					"location": {
+						"type": "AzureBlobFSLocation",
+						"fileSystem": "silver"
+					},
+					"compressionCodec": "snappy"
+				},
+				"schema": []
+			},
+			"dependsOn": [
+				"[concat(variables('factoryId'), '/linkedServices/LS_AZURE_DATA_LAKE')]"
+			]
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/DS_M_SELLING_INVENTORY_STAG_BLOB')]",
+			"type": "Microsoft.DataFactory/factories/datasets",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"linkedServiceName": {
+					"referenceName": "LS_AZURE_DATA_LAKE",
+					"type": "LinkedServiceReference"
+				},
+				"annotations": [],
+				"type": "DelimitedText",
+				"typeProperties": {
+					"location": {
+						"type": "AzureBlobFSLocation",
+						"fileName": "M_SELLING_INVENTORY_STAG.csv",
+						"fileSystem": "raw"
+					},
+					"columnDelimiter": ",",
+					"escapeChar": "\\",
+					"firstRowAsHeader": true,
+					"quoteChar": "\""
+				},
+				"schema": [
+					{
+						"name": "ID",
+						"type": "String"
+					},
+					{
+						"name": "SOURCE_SYSTEM_CODE",
+						"type": "String"
+					},
+					{
+						"name": "SOURCE_CMG_ID",
+						"type": "String"
+					},
+					{
+						"name": "SOURCE_PLANT_CODE",
+						"type": "String"
+					},
+					{
+						"name": "SOURCE_STORAGE_LOCATION",
+						"type": "String"
+					},
+					{
+						"name": "SOURCE_ITEM_CODE",
+						"type": "String"
+					},
+					{
+						"name": "SOURCE_BATCH_NO",
+						"type": "String"
+					},
+					{
+						"name": "SOURCE_ITEM_TYPE",
+						"type": "String"
+					},
+					{
+						"name": "BATCH_STATUS_KEY",
+						"type": "String"
+					},
+					{
+						"name": "BATCH_STOCK_TYPE",
+						"type": "String"
+					},
+					{
+						"name": "QUANTITY",
+						"type": "String"
+					},
+					{
+						"name": "UNIT_OF_MEASURE",
+						"type": "String"
+					},
+					{
+						"name": "LOADED_FLAG",
+						"type": "String"
+					},
+					{
+						"name": "AI_UOM_QUANTITY",
+						"type": "String"
+					},
+					{
+						"name": "ACTIVE_INGREDIENT_UOM",
+						"type": "String"
+					},
+					{
+						"name": "QC_BATCH_POTENCY",
+						"type": "String"
+					},
+					{
+						"name": "DEFAULT_BATCH_POTENCY",
+						"type": "String"
+					},
+					{
+						"name": "VENDOR_CODE",
+						"type": "String"
+					},
+					{
+						"name": "BATCH_STATUS",
+						"type": "String"
+					},
+					{
+						"name": "ERP_CREATION_DATE",
+						"type": "String"
+					},
+					{
+						"name": "EXTERNAL_SYSTEM_CREATION_DATE",
+						"type": "String"
+					},
+					{
+						"name": "AVAILABLE_DATE",
+						"type": "String"
+					},
+					{
+						"name": "MIC_PROCESS_DATE",
+						"type": "String"
+					},
+					{
+						"name": "EXPIRY_DATE",
+						"type": "String"
+					}
+				]
+			},
+			"dependsOn": [
+				"[concat(variables('factoryId'), '/linkedServices/LS_AZURE_DATA_LAKE')]"
+			]
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/ITEM_TEST_SRC')]",
+			"type": "Microsoft.DataFactory/factories/datasets",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"linkedServiceName": {
+					"referenceName": "LS_AZURE_DATA_LAKE",
+					"type": "LinkedServiceReference"
+				},
+				"annotations": [],
+				"type": "Parquet",
+				"typeProperties": {
+					"location": {
+						"type": "AzureBlobFSLocation",
+						"fileName": "item.parquet",
+						"fileSystem": "bronze"
+					},
+					"compressionCodec": "snappy"
+				},
+				"schema": [
+					{
+						"name": "ITEMID",
+						"type": "UTF8"
+					},
+					{
+						"name": "ITEMDESCRIPTION",
+						"type": "UTF8"
+					},
+					{
+						"name": "ITEMTYPE",
+						"type": "UTF8"
+					},
+					{
+						"name": "LEVEL4MEMBERID",
+						"type": "UTF8"
+					},
+					{
+						"name": "LEVEL4MEMBERDESCRIPTION",
+						"type": "UTF8"
+					},
+					{
+						"name": "LEVEL3MEMBERID",
+						"type": "UTF8"
+					},
+					{
+						"name": "LEVEL3MEMBERDESCRIPTION",
+						"type": "UTF8"
+					},
+					{
+						"name": "LEVEL2MEMBERID",
+						"type": "UTF8"
+					},
+					{
+						"name": "LEVEL2MEMBERDESCRIPTION",
+						"type": "UTF8"
+					},
+					{
+						"name": "LEVEL1MEMBERID",
+						"type": "UTF8"
+					},
+					{
+						"name": "LEVEL1MEMBERDESCRIPTION",
+						"type": "UTF8"
+					},
+					{
+						"name": "ATTRSUPPLYTYPE",
+						"type": "UTF8"
+					},
+					{
+						"name": "ATTRORIGITEM",
+						"type": "UTF8"
+					},
+					{
+						"name": "ATTRVERSION",
+						"type": "UTF8"
+					},
+					{
+						"name": "UNITCOST",
+						"type": "DOUBLE"
+					},
+					{
+						"name": "ISNEWITEM",
+						"type": "BOOLEAN"
+					},
+					{
+						"name": "ITEMCLASS",
+						"type": "UTF8"
+					},
+					{
+						"name": "HANDLINGINSTRUCTIONCODE",
+						"type": "UTF8"
+					},
+					{
+						"name": "ITEMFAMILYGROUP",
+						"type": "UTF8"
+					},
+					{
+						"name": "VOLUME",
+						"type": "DECIMAL",
+						"precision": 12,
+						"scale": 4
+					},
+					{
+						"name": "UNITSPERPALLET",
+						"type": "DECIMAL",
+						"precision": 12,
+						"scale": 4
+					},
+					{
+						"name": "ITEMPRIORITYATTRIB",
+						"type": "UTF8"
+					},
+					{
+						"name": "UNITCONV1",
+						"type": "DOUBLE"
+					},
+					{
+						"name": "UNITCONV2",
+						"type": "DOUBLE"
+					},
+					{
+						"name": "UNITCONV3",
+						"type": "DOUBLE"
+					},
+					{
+						"name": "UNITCONV4",
+						"type": "DOUBLE"
+					},
+					{
+						"name": "GROSSWEIGHT",
+						"type": "DECIMAL",
+						"precision": 12,
+						"scale": 4
+					},
+					{
+						"name": "BASEUOM",
+						"type": "UTF8"
+					},
+					{
+						"name": "USEDYNDEPFROMITEMLOCDEPLOYMENTPARAM",
+						"type": "BOOLEAN"
+					},
+					{
+						"name": "USETRANSPORTCOSTFROMDYNDEPSRC",
+						"type": "BOOLEAN"
+					},
+					{
+						"name": "DYNDEPDECIMALS",
+						"type": "DECIMAL",
+						"precision": 38,
+						"scale": 0
+					},
+					{
+						"name": "DYNDEPOPTION",
+						"type": "DECIMAL",
+						"precision": 38,
+						"scale": 0
+					},
+					{
+						"name": "DYNDEPPUSHOPTION",
+						"type": "DECIMAL",
+						"precision": 38,
+						"scale": 0
+					},
+					{
+						"name": "DYNDEPQTY",
+						"type": "DOUBLE"
+					},
+					{
+						"name": "OPTIONCLASS",
+						"type": "UTF8"
+					},
+					{
+						"name": "ITEMSOURCINGSTRATEGY",
+						"type": "UTF8"
+					},
+					{
+						"name": "OPTIONS",
+						"type": "UTF8"
+					},
+					{
+						"name": "DISABLENETTINGPLANNING",
+						"type": "UTF8"
+					},
+					{
+						"name": "ISSHORTLIFECYCLEITEM",
+						"type": "BOOLEAN"
+					},
+					{
+						"name": "ISPARENTITEM",
+						"type": "BOOLEAN"
+					},
+					{
+						"name": "UDC_TA",
+						"type": "UTF8"
+					},
+					{
+						"name": "UDC_ACTIVEPRINCIPLE",
+						"type": "UTF8"
+					},
+					{
+						"name": "UDC_CONTAINER",
+						"type": "UTF8"
+					},
+					{
+						"name": "UDC_MARKET",
+						"type": "UTF8"
+					},
+					{
+						"name": "UDC_MFGSOURCE",
+						"type": "UTF8"
+					},
+					{
+						"name": "UDC_PACKSIZE",
+						"type": "DECIMAL",
+						"precision": 12,
+						"scale": 0
+					},
+					{
+						"name": "UDC_PHARMAFORM",
+						"type": "UTF8"
+					},
+					{
+						"name": "UDC_PRODUCTTYPE",
+						"type": "UTF8"
+					},
+					{
+						"name": "UDC_ITEMSTATUS",
+						"type": "UTF8"
+					},
+					{
+						"name": "UDC_EQUNITS",
+						"type": "DECIMAL",
+						"precision": 30,
+						"scale": 2
+					},
+					{
+						"name": "UDC_BRAND",
+						"type": "UTF8"
+					},
+					{
+						"name": "UDC_TADESCR",
+						"type": "UTF8"
+					},
+					{
+						"name": "UDC_BRANDDESCR",
+						"type": "UTF8"
+					},
+					{
+						"name": "UDC_STRENGTHDESCR",
+						"type": "UTF8"
+					},
+					{
+						"name": "UDC_MP_RELEVANT",
+						"type": "UTF8"
+					},
+					{
+						"name": "UDC_FAMILY",
+						"type": "UTF8"
+					},
+					{
+						"name": "UDC_CORPDESCR",
+						"type": "UTF8"
+					},
+					{
+						"name": "UDC_SOPSW",
+						"type": "BOOLEAN"
+					},
+					{
+						"name": "UDC_TPREGION",
+						"type": "UTF8"
+					},
+					{
+						"name": "UDC_DIVISION",
+						"type": "UTF8"
+					},
+					{
+						"name": "UDC_MULTIDEST",
+						"type": "BOOLEAN"
+					},
+					{
+						"name": "UDC_MULTISOURCE",
+						"type": "BOOLEAN"
+					},
+					{
+						"name": "UDC_BRANDPRIO",
+						"type": "DECIMAL",
+						"precision": 22,
+						"scale": 0
+					},
+					{
+						"name": "UDC_ITEMEXCEPTION",
+						"type": "DECIMAL",
+						"precision": 22,
+						"scale": 0
+					},
+					{
+						"name": "UDC_PACK_SITE",
+						"type": "UTF8"
+					},
+					{
+						"name": "UDC_PROD_SITE",
+						"type": "UTF8"
+					},
+					{
+						"name": "UDC_API_SITE",
+						"type": "UTF8"
+					},
+					{
+						"name": "UDC_GPSNAME",
+						"type": "UTF8"
+					},
+					{
+						"name": "UDC_GROUPING",
+						"type": "UTF8"
+					},
+					{
+						"name": "UDC_NBUNITSPERHNDLG",
+						"type": "DECIMAL",
+						"precision": 12,
+						"scale": 0
+					},
+					{
+						"name": "UDC_NBHNDLGPERPALLET",
+						"type": "DECIMAL",
+						"precision": 12,
+						"scale": 0
+					},
+					{
+						"name": "UDC_NBHNDLGPERLAYER",
+						"type": "DECIMAL",
+						"precision": 12,
+						"scale": 0
+					},
+					{
+						"name": "UDC_PACKMODULE",
+						"type": "UTF8"
+					},
+					{
+						"name": "UDC_STORAGECONDITION",
+						"type": "UTF8"
+					},
+					{
+						"name": "UDC_GRP1",
+						"type": "UTF8"
+					},
+					{
+						"name": "UDC_GRP2",
+						"type": "UTF8"
+					},
+					{
+						"name": "UDC_GRP3",
+						"type": "UTF8"
+					},
+					{
+						"name": "UDC_GRP4",
+						"type": "UTF8"
+					},
+					{
+						"name": "UDC_CREATEDBY",
+						"type": "UTF8"
+					},
+					{
+						"name": "UDC_CREATIONDATE",
+						"type": "DATE"
+					},
+					{
+						"name": "UDC_LASTUPDATEDATE",
+						"type": "DATE"
+					},
+					{
+						"name": "UDC_LASTUPDATEDBY",
+						"type": "UTF8"
+					},
+					{
+						"name": "UDC_FACTOR",
+						"type": "DECIMAL",
+						"precision": 14,
+						"scale": 4
+					},
+					{
+						"name": "UDC_ACTIVITY",
+						"type": "UTF8"
+					},
+					{
+						"name": "UDC_CRITICITY",
+						"type": "DECIMAL",
+						"precision": 30,
+						"scale": 2
+					},
+					{
+						"name": "UDC_NPISW",
+						"type": "BOOLEAN"
+					},
+					{
+						"name": "UDC_SIZETOBRAND",
+						"type": "DECIMAL",
+						"precision": 18,
+						"scale": 6
+					},
+					{
+						"name": "UDC_ARCPROJSTATICSW",
+						"type": "BOOLEAN"
+					},
+					{
+						"name": "UDC_PACKSPERPALLET",
+						"type": "DECIMAL",
+						"precision": 38,
+						"scale": 5
+					},
+					{
+						"name": "UDC_RESTRICT_SW",
+						"type": "BOOLEAN"
+					},
+					{
+						"name": "UDC_STACKINGPERPACK",
+						"type": "DECIMAL",
+						"precision": 38,
+						"scale": 0
+					},
+					{
+						"name": "UDC_NBTABSPERBLISTER",
+						"type": "DECIMAL",
+						"precision": 22,
+						"scale": 0
+					},
+					{
+						"name": "UDC_MTS_MTO",
+						"type": "DECIMAL",
+						"precision": 30,
+						"scale": 2
+					},
+					{
+						"name": "UDC_NEW",
+						"type": "BOOLEAN"
+					},
+					{
+						"name": "UDC_STRENGTH",
+						"type": "UTF8"
+					},
+					{
+						"name": "UDC_DOSETOMCG",
+						"type": "DECIMAL",
+						"precision": 38,
+						"scale": 10
+					},
+					{
+						"name": "UDC_DOSETOIU",
+						"type": "DECIMAL",
+						"precision": 38,
+						"scale": 0
+					},
+					{
+						"name": "UDC_DMDUNITLEVEL",
+						"type": "DECIMAL",
+						"precision": 38,
+						"scale": 0
+					},
+					{
+						"name": "UDC_BOXTODOSES",
+						"type": "DECIMAL",
+						"precision": 38,
+						"scale": 0
+					},
+					{
+						"name": "UDC_PACKSIZEDESCR",
+						"type": "UTF8"
+					},
+					{
+						"name": "UDC_FAMILYGRPDESCR",
+						"type": "UTF8"
+					},
+					{
+						"name": "UDC_LOCALPRODUCTSW",
+						"type": "UTF8"
+					},
+					{
+						"name": "UDC_SIZETOSTRENGTH",
+						"type": "DECIMAL",
+						"precision": 38,
+						"scale": 10
+					},
+					{
+						"name": "UDC_LRPDUMMY",
+						"type": "BOOLEAN"
+					},
+					{
+						"name": "UDC_LRPPRODLEVEL",
+						"type": "UTF8"
+					},
+					{
+						"name": "UDC_LRPSCOPE",
+						"type": "BOOLEAN"
+					},
+					{
+						"name": "UDC_GPH",
+						"type": "UTF8"
+					},
+					{
+						"name": "UDC_GPHDESCR",
+						"type": "UTF8"
+					},
+					{
+						"name": "UDC_PACKAGINGSTYLE",
+						"type": "UTF8"
+					},
+					{
+						"name": "UDC_ACTIVEINGR",
+						"type": "UTF8"
+					},
+					{
+						"name": "UDC_SUPPLIERNAME",
+						"type": "UTF8"
+					},
+					{
+						"name": "UDC_PRODCONFIG",
+						"type": "UTF8"
+					},
+					{
+						"name": "UDC_PRODMACROCONFIG",
+						"type": "UTF8"
+					},
+					{
+						"name": "UDC_MACROCONFIGDESCR",
+						"type": "UTF8"
+					},
+					{
+						"name": "UDC_DMDUNITEXCEPTION",
+						"type": "DECIMAL",
+						"precision": 38,
+						"scale": 0
+					},
+					{
+						"name": "UDC_PROJECTREF",
+						"type": "UTF8"
+					},
+					{
+						"name": "UDC_SECPACKPERBOX",
+						"type": "DECIMAL",
+						"precision": 38,
+						"scale": 10
+					},
+					{
+						"name": "UDC_PACKERMFG",
+						"type": "UTF8"
+					},
+					{
+						"name": "UDC_GAUSSGLOBALCODE",
+						"type": "UTF8"
+					},
+					{
+						"name": "UDC_BFDP",
+						"type": "UTF8"
+					},
+					{
+						"name": "UDC_GPS",
+						"type": "UTF8"
+					},
+					{
+						"name": "UDC_SUPMFG",
+						"type": "UTF8"
+					},
+					{
+						"name": "UDC_PACKMFG",
+						"type": "UTF8"
+					},
+					{
+						"name": "UDC_ACTIVE",
+						"type": "BOOLEAN"
+					},
+					{
+						"name": "UDC_GRPDVLP",
+						"type": "UTF8"
+					},
+					{
+						"name": "UDC_TABLET_SHAPE",
+						"type": "UTF8"
+					},
+					{
+						"name": "UDC_TXF_CONSTRAINED_DEMAND",
+						"type": "BOOLEAN"
+					},
+					{
+						"name": "UDC_SBU_YPLUS1",
+						"type": "UTF8"
+					},
+					{
+						"name": "UDC_SBU_DESC_YPLUS1",
+						"type": "UTF8"
+					},
+					{
+						"name": "UDC_GBU_YPLUS1",
+						"type": "UTF8"
+					},
+					{
+						"name": "UDC_BUSINESS_LINE",
+						"type": "UTF8"
+					},
+					{
+						"name": "UDC_SCM_CATEGORY",
+						"type": "UTF8"
+					},
+					{
+						"name": "UDC_DOSAGE_UOM",
+						"type": "UTF8"
+					},
+					{
+						"name": "UDC_API_DOSAGE",
+						"type": "DECIMAL",
+						"precision": 38,
+						"scale": 10
+					},
+					{
+						"name": "UDC_PLNBUSLINE",
+						"type": "UTF8"
+					},
+					{
+						"name": "UDC_PLNBUSFIELD",
+						"type": "UTF8"
+					},
+					{
+						"name": "UDC_PLNBUSUNIT",
+						"type": "UTF8"
+					},
+					{
+						"name": "UDC_BUSINESS_FIELD",
+						"type": "UTF8"
+					},
+					{
+						"name": "UDC_BUSINESS_UNIT",
+						"type": "UTF8"
+					},
+					{
+						"name": "UDC_SCCATEGORY",
+						"type": "UTF8"
+					},
+					{
+						"name": "UDC_DEVICETYPE",
+						"type": "UTF8"
+					},
+					{
+						"name": "UDC_BUSDIV",
+						"type": "UTF8"
+					},
+					{
+						"name": "UDC_ISDUMMY",
+						"type": "UTF8"
+					},
+					{
+						"name": "UDC_FCSTTXFSTOP",
+						"type": "DATE"
+					},
+					{
+						"name": "UDC_UOM",
+						"type": "UTF8"
+					},
+					{
+						"name": "UDC_LOCAL_BRAND",
+						"type": "UTF8"
+					},
+					{
+						"name": "UDC_UNITPERPALLET",
+						"type": "DECIMAL",
+						"precision": 38,
+						"scale": 10
+					},
+					{
+						"name": "UDC_WEIGHT",
+						"type": "DECIMAL",
+						"precision": 38,
+						"scale": 10
+					}
+				]
+			},
+			"dependsOn": [
+				"[concat(variables('factoryId'), '/linkedServices/LS_AZURE_DATA_LAKE')]"
+			]
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/LS_SNOWFLAKE_V2')]",
+			"type": "Microsoft.DataFactory/factories/linkedServices",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"annotations": [],
+				"type": "SnowflakeV2",
+				"typeProperties": {
+					"authenticationType": "Basic",
+					"accountIdentifier": "TBKOFHT-MTB84290",
+					"user": "ANJSNOWFLAKE",
+					"database": "[parameters('LS_SNOWFLAKE_V2_properties_typeProperties_database')]",
+					"warehouse": "FIRST_DWH",
+					"role": "[parameters('LS_SNOWFLAKE_V2_properties_typeProperties_role')]",
+					"host": "[parameters('LS_SNOWFLAKE_V2_properties_typeProperties_host')]",
+					"password": {
+						"type": "SecureString",
+						"value": "[parameters('LS_SNOWFLAKE_V2_password')]"
+					}
+				},
+				"connectVia": {
+					"referenceName": "TESTIR",
+					"type": "IntegrationRuntimeReference"
+				}
+			},
+			"dependsOn": [
+				"[concat(variables('factoryId'), '/integrationRuntimes/TESTIR')]"
+			]
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/PL_COPY_ALL_FILES')]",
+			"type": "Microsoft.DataFactory/factories/pipelines",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"activities": [
+					{
+						"name": "Get Metadata",
+						"type": "GetMetadata",
+						"dependsOn": [],
+						"policy": {
+							"timeout": "0.12:00:00",
+							"retry": 0,
+							"retryIntervalInSeconds": 30,
+							"secureOutput": false,
+							"secureInput": false
+						},
+						"userProperties": [],
+						"typeProperties": {
+							"dataset": {
+								"referenceName": "DS_ALL_FILE_IN_RAW",
+								"type": "DatasetReference",
+								"parameters": {}
+							},
+							"fieldList": [
+								"childItems"
+							],
+							"storeSettings": {
+								"type": "AzureBlobFSReadSettings",
+								"recursive": true,
+								"enablePartitionDiscovery": false
+							},
+							"formatSettings": {
+								"type": "DelimitedTextReadSettings"
+							}
+						}
+					},
+					{
+						"name": "ForEach",
+						"type": "ForEach",
+						"dependsOn": [
+							{
+								"activity": "Get Metadata",
+								"dependencyConditions": [
+									"Succeeded"
+								]
+							}
+						],
+						"userProperties": [],
+						"typeProperties": {
+							"items": {
+								"value": "@activity('Get Metadata').output.childItems",
+								"type": "Expression"
+							},
+							"isSequential": true,
+							"activities": [
+								{
+									"name": "Set variable1",
+									"type": "SetVariable",
+									"dependsOn": [],
+									"policy": {
+										"secureOutput": false,
+										"secureInput": false
+									},
+									"userProperties": [],
+									"typeProperties": {
+										"variableName": "JSON_FILE_NAME",
+										"value": {
+											"value": "@item().name",
+											"type": "Expression"
+										}
+									}
+								},
+								{
+									"name": "If Condition1",
+									"type": "IfCondition",
+									"dependsOn": [
+										{
+											"activity": "Set variable1",
+											"dependencyConditions": [
+												"Succeeded"
+											]
+										}
+									],
+									"userProperties": [],
+									"typeProperties": {
+										"expression": {
+											"value": "@contains(variables('JSON_FILE_NAME'),'.json')",
+											"type": "Expression"
+										},
+										"ifTrueActivities": [
+											{
+												"name": "Copy Raw To Bronze",
+												"type": "Copy",
+												"dependsOn": [],
+												"policy": {
+													"timeout": "0.12:00:00",
+													"retry": 0,
+													"retryIntervalInSeconds": 30,
+													"secureOutput": false,
+													"secureInput": false
+												},
+												"userProperties": [],
+												"typeProperties": {
+													"source": {
+														"type": "JsonSource",
+														"storeSettings": {
+															"type": "AzureBlobFSReadSettings",
+															"recursive": true,
+															"enablePartitionDiscovery": false
+														},
+														"formatSettings": {
+															"type": "JsonReadSettings"
+														}
+													},
+													"sink": {
+														"type": "JsonSink",
+														"storeSettings": {
+															"type": "AzureBlobFSWriteSettings"
+														},
+														"formatSettings": {
+															"type": "JsonWriteSettings"
+														}
+													},
+													"enableStaging": false
+												},
+												"inputs": [
+													{
+														"referenceName": "DC_CP_ALL_JSON",
+														"type": "DatasetReference",
+														"parameters": {
+															"P_FILE_NAME": {
+																"value": "@item().name",
+																"type": "Expression"
+															}
+														}
+													}
+												],
+												"outputs": [
+													{
+														"referenceName": "CP_ALL_BRONZE",
+														"type": "DatasetReference",
+														"parameters": {}
+													}
+												]
+											}
+										]
+									}
+								}
+							]
+						}
+					}
+				],
+				"policy": {
+					"elapsedTimeMetric": {}
+				},
+				"variables": {
+					"JSON_FILE_NAME": {
+						"type": "String"
+					}
+				},
+				"annotations": [],
+				"lastPublishTime": "2025-12-28T12:05:46Z"
+			},
+			"dependsOn": [
+				"[concat(variables('factoryId'), '/datasets/DS_ALL_FILE_IN_RAW')]",
+				"[concat(variables('factoryId'), '/datasets/DC_CP_ALL_JSON')]",
+				"[concat(variables('factoryId'), '/datasets/CP_ALL_BRONZE')]"
+			]
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/PL_COPY_LATEST_FILE')]",
+			"type": "Microsoft.DataFactory/factories/pipelines",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"activities": [
+					{
+						"name": "GetFileList",
+						"type": "GetMetadata",
+						"dependsOn": [],
+						"policy": {
+							"timeout": "0.12:00:00",
+							"retry": 0,
+							"retryIntervalInSeconds": 30,
+							"secureOutput": false,
+							"secureInput": false
+						},
+						"userProperties": [],
+						"typeProperties": {
+							"dataset": {
+								"referenceName": "DS_ALL_FILE_IN_RAW",
+								"type": "DatasetReference",
+								"parameters": {}
+							},
+							"fieldList": [
+								"childItems"
+							],
+							"storeSettings": {
+								"type": "AzureBlobFSReadSettings",
+								"recursive": true,
+								"enablePartitionDiscovery": false
+							},
+							"formatSettings": {
+								"type": "DelimitedTextReadSettings"
+							}
+						}
+					},
+					{
+						"name": "ForEachFiles",
+						"type": "ForEach",
+						"dependsOn": [
+							{
+								"activity": "GetFileList",
+								"dependencyConditions": [
+									"Succeeded"
+								]
+							}
+						],
+						"userProperties": [],
+						"typeProperties": {
+							"items": {
+								"value": "@activity('GetFileList').output.childItems",
+								"type": "Expression"
+							},
+							"isSequential": true,
+							"activities": [
+								{
+									"name": "GetMetadataEachFile",
+									"type": "GetMetadata",
+									"dependsOn": [],
+									"policy": {
+										"timeout": "0.12:00:00",
+										"retry": 0,
+										"retryIntervalInSeconds": 30,
+										"secureOutput": false,
+										"secureInput": false
+									},
+									"userProperties": [],
+									"typeProperties": {
+										"dataset": {
+											"referenceName": "DS_LIST_FILE_RAW",
+											"type": "DatasetReference",
+											"parameters": {
+												"FILE_NAME": {
+													"value": "@item().name",
+													"type": "Expression"
+												}
+											}
+										},
+										"fieldList": [
+											"lastModified"
+										],
+										"storeSettings": {
+											"type": "AzureBlobFSReadSettings",
+											"recursive": true,
+											"enablePartitionDiscovery": false
+										},
+										"formatSettings": {
+											"type": "JsonReadSettings"
+										}
+									}
+								},
+								{
+									"name": "IfIsLatest",
+									"type": "IfCondition",
+									"dependsOn": [
+										{
+											"activity": "GetMetadataEachFile",
+											"dependencyConditions": [
+												"Succeeded"
+											]
+										}
+									],
+									"userProperties": [],
+									"typeProperties": {
+										"expression": {
+											"value": "@greater(\n  activity('GetMetadataEachFile').output.lastModified,\n  variables('PREVIOUS_LAST_MODIFIED_DATE')\n)",
+											"type": "Expression"
+										},
+										"ifTrueActivities": [
+											{
+												"name": "SetLatestFileName",
+												"type": "SetVariable",
+												"dependsOn": [],
+												"policy": {
+													"secureOutput": false,
+													"secureInput": false
+												},
+												"userProperties": [],
+												"typeProperties": {
+													"variableName": "LATEST_FILE_NAME",
+													"value": {
+														"value": "@item().name",
+														"type": "Expression"
+													}
+												}
+											},
+											{
+												"name": "LatestFileLastModified",
+												"type": "SetVariable",
+												"dependsOn": [
+													{
+														"activity": "SetLatestFileName",
+														"dependencyConditions": [
+															"Succeeded"
+														]
+													}
+												],
+												"policy": {
+													"secureOutput": false,
+													"secureInput": false
+												},
+												"userProperties": [],
+												"typeProperties": {
+													"variableName": "PREVIOUS_LAST_MODIFIED_DATE",
+													"value": {
+														"value": "@activity('GetMetadataEachFile').output.lastModified",
+														"type": "Expression"
+													}
+												}
+											}
+										]
+									}
+								}
+							]
+						}
+					},
+					{
+						"name": "CopyLastestFile",
+						"type": "Copy",
+						"dependsOn": [
+							{
+								"activity": "ForEachFiles",
+								"dependencyConditions": [
+									"Succeeded"
+								]
+							}
+						],
+						"policy": {
+							"timeout": "0.12:00:00",
+							"retry": 0,
+							"retryIntervalInSeconds": 30,
+							"secureOutput": false,
+							"secureInput": false
+						},
+						"userProperties": [],
+						"typeProperties": {
+							"source": {
+								"type": "DelimitedTextSource",
+								"storeSettings": {
+									"type": "AzureBlobFSReadSettings",
+									"recursive": true,
+									"enablePartitionDiscovery": false
+								},
+								"formatSettings": {
+									"type": "DelimitedTextReadSettings"
+								}
+							},
+							"sink": {
+								"type": "DelimitedTextSink",
+								"storeSettings": {
+									"type": "AzureBlobFSWriteSettings"
+								},
+								"formatSettings": {
+									"type": "DelimitedTextWriteSettings",
+									"quoteAllText": true,
+									"fileExtension": ".txt"
+								}
+							},
+							"enableStaging": false,
+							"translator": {
+								"type": "TabularTranslator",
+								"typeConversion": true,
+								"typeConversionSettings": {
+									"allowDataTruncation": true,
+									"treatBooleanAsNumber": false
+								}
+							}
+						},
+						"inputs": [
+							{
+								"referenceName": "DS_LATEST_FILES",
+								"type": "DatasetReference",
+								"parameters": {
+									"SRS_FILE_NAME": {
+										"value": "@variables('LATEST_FILE_NAME')",
+										"type": "Expression"
+									}
+								}
+							}
+						],
+						"outputs": [
+							{
+								"referenceName": "DS_LATEST_FILE_BRONZE",
+								"type": "DatasetReference",
+								"parameters": {}
+							}
+						]
+					}
+				],
+				"policy": {
+					"elapsedTimeMetric": {}
+				},
+				"variables": {
+					"LATEST_FILE_NAME": {
+						"type": "String"
+					},
+					"PREVIOUS_LAST_MODIFIED_DATE": {
+						"type": "String",
+						"defaultValue": "1900-01-01T00:00:00Z"
+					}
+				},
+				"annotations": [],
+				"lastPublishTime": "2025-12-28T13:34:52Z"
+			},
+			"dependsOn": [
+				"[concat(variables('factoryId'), '/datasets/DS_ALL_FILE_IN_RAW')]",
+				"[concat(variables('factoryId'), '/datasets/DS_LATEST_FILES')]",
+				"[concat(variables('factoryId'), '/datasets/DS_LATEST_FILE_BRONZE')]",
+				"[concat(variables('factoryId'), '/datasets/DS_LIST_FILE_RAW')]"
+			]
+		}
+	]
+}

@@ -1,0 +1,104 @@
+{
+	"$schema": "http://schema.management.azure.com/schemas/2015-01-01/deploymentTemplate.json#",
+	"contentVersion": "1.0.0.0",
+	"parameters": {
+		"factoryName": {
+			"type": "string",
+			"metadata": "Data Factory name",
+			"defaultValue": "datafactorylearning-ws"
+		},
+		"LS_AZURE_DATA_LAKE_accountKey": {
+			"type": "secureString",
+			"metadata": "Secure string for 'accountKey' of 'LS_AZURE_DATA_LAKE'"
+		},
+		"LS_SNOWFLAKE_V2_password": {
+			"type": "secureString",
+			"metadata": "Secure string for 'password' of 'LS_SNOWFLAKE_V2'"
+		},
+		"LS_AZURE_DATA_LAKE_properties_typeProperties_url": {
+			"type": "string",
+			"defaultValue": "https://mylearning1dl.dfs.core.windows.net/"
+		},
+		"LS_SNOWFLAKE_V2_properties_typeProperties_database": {
+			"type": "string",
+			"defaultValue": "FIRST_DB"
+		},
+		"LS_SNOWFLAKE_V2_properties_typeProperties_role": {
+			"type": "string",
+			"defaultValue": "ACCOUNTADMIN"
+		},
+		"LS_SNOWFLAKE_V2_properties_typeProperties_host": {
+			"type": "string",
+			"defaultValue": "TBKOFHT-MTB84290.snowflakecomputing.com"
+		},
+		"containerUri": {
+			"type": "string",
+			"metadata": "URI to storage account containing linked ARM templates"
+		},
+		"containerSasToken": {
+			"type": "string",
+			"metadata": "Sas token to storage account containing linked ARM templates"
+		}
+	},
+	"variables": {
+		"factoryId": "[concat('Microsoft.DataFactory/factories/', parameters('factoryName'))]"
+	},
+	"resources": [
+		{
+			"name": "datafactorylearning-ws_ArmTemplate_0",
+			"type": "Microsoft.Resources/deployments",
+			"apiVersion": "2024-03-01",
+			"properties": {
+				"mode": "incremental",
+				"templateLink": {
+					"uri": "[concat(parameters('containerUri'), '/ArmTemplate_0.json', parameters('containerSasToken'))]",
+					"contentVersion": "1.0.0.0"
+				},
+				"parameters": {
+					"factoryName": {
+						"value": "[parameters('factoryName')]"
+					},
+					"LS_AZURE_DATA_LAKE_accountKey": {
+						"value": "[parameters('LS_AZURE_DATA_LAKE_accountKey')]"
+					},
+					"LS_SNOWFLAKE_V2_password": {
+						"value": "[parameters('LS_SNOWFLAKE_V2_password')]"
+					},
+					"LS_AZURE_DATA_LAKE_properties_typeProperties_url": {
+						"value": "[parameters('LS_AZURE_DATA_LAKE_properties_typeProperties_url')]"
+					},
+					"LS_SNOWFLAKE_V2_properties_typeProperties_database": {
+						"value": "[parameters('LS_SNOWFLAKE_V2_properties_typeProperties_database')]"
+					},
+					"LS_SNOWFLAKE_V2_properties_typeProperties_role": {
+						"value": "[parameters('LS_SNOWFLAKE_V2_properties_typeProperties_role')]"
+					},
+					"LS_SNOWFLAKE_V2_properties_typeProperties_host": {
+						"value": "[parameters('LS_SNOWFLAKE_V2_properties_typeProperties_host')]"
+					}
+				}
+			},
+			"dependsOn": []
+		},
+		{
+			"name": "datafactorylearning-ws_ArmTemplate_1",
+			"type": "Microsoft.Resources/deployments",
+			"apiVersion": "2024-03-01",
+			"properties": {
+				"mode": "incremental",
+				"templateLink": {
+					"uri": "[concat(parameters('containerUri'), '/ArmTemplate_1.json', parameters('containerSasToken'))]",
+					"contentVersion": "1.0.0.0"
+				},
+				"parameters": {
+					"factoryName": {
+						"value": "[parameters('factoryName')]"
+					}
+				}
+			},
+			"dependsOn": [
+				"[resourceId('Microsoft.Resources/deployments', 'datafactorylearning-ws_ArmTemplate_0')]"
+			]
+		}
+	]
+}
