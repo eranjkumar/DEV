@@ -1,0 +1,101 @@
+{
+	"name": "PL_DF_CP_ALL_LKP_ADLS_SNOW",
+	"properties": {
+		"activities": [
+			{
+				"name": "PARAM_CONFIG_TABLE",
+				"type": "Lookup",
+				"dependsOn": [],
+				"policy": {
+					"timeout": "0.12:00:00",
+					"retry": 0,
+					"retryIntervalInSeconds": 30,
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"source": {
+						"type": "SnowflakeV2Source",
+						"query": "SELECT * FROM MICSTAG.PARAM_CONFIG_TABLE ORDER BY TABLE_NAME",
+						"exportSettings": {
+							"type": "SnowflakeExportCopyCommand"
+						}
+					},
+					"dataset": {
+						"referenceName": "PARAM_CONFIG_TABLE",
+						"type": "DatasetReference"
+					},
+					"firstRowOnly": false
+				}
+			},
+			{
+				"name": "ForEachFile",
+				"type": "ForEach",
+				"dependsOn": [
+					{
+						"activity": "PARAM_CONFIG_TABLE",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
+				"userProperties": [],
+				"typeProperties": {
+					"items": {
+						"value": "@activity('PARAM_CONFIG_TABLE').output.value",
+						"type": "Expression"
+					},
+					"isSequential": true,
+					"activities": [
+						{
+							"name": "DF_CP_ALL_LKP_ADLS_SNOW",
+							"type": "ExecuteDataFlow",
+							"dependsOn": [],
+							"policy": {
+								"timeout": "0.12:00:00",
+								"retry": 0,
+								"retryIntervalInSeconds": 30,
+								"secureOutput": false,
+								"secureInput": false
+							},
+							"userProperties": [],
+							"typeProperties": {
+								"dataflow": {
+									"referenceName": "DF_CP_ALL_LKP_ADLS_SNOW",
+									"type": "DataFlowReference",
+									"datasetParameters": {
+										"SrcAllLkpFiles": {
+											"FILE_NAME": {
+												"value": "@item().FILE_NAME",
+												"type": "Expression"
+											}
+										},
+										"TgtAllLkpTables": {
+											"TABLE_NAME": {
+												"value": "@item().TABLE_NAME",
+												"type": "Expression"
+											},
+											"SCHEMA_NAME": {
+												"value": "@item().SCHEMA_NAME",
+												"type": "Expression"
+											}
+										}
+									}
+								},
+								"compute": {
+									"coreCount": 16,
+									"computeType": "General"
+								},
+								"traceLevel": "Fine"
+							}
+						}
+					]
+				}
+			}
+		],
+		"annotations": [],
+		"lastPublishTime": "2025-12-28T17:25:24Z"
+	},
+	"type": "Microsoft.DataFactory/factories/pipelines"
+}

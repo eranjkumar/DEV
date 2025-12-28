@@ -1,0 +1,219 @@
+{
+	"name": "DF_CUSTOMER_SCDTYPE2_LOAD",
+	"properties": {
+		"type": "MappingDataFlow",
+		"typeProperties": {
+			"sources": [
+				{
+					"dataset": {
+						"referenceName": "CUSTOMER_STG",
+						"type": "DatasetReference"
+					},
+					"name": "SOURCE",
+					"description": "CUSTOMER_STG"
+				},
+				{
+					"dataset": {
+						"referenceName": "CUSTOMER_TARGET",
+						"type": "DatasetReference"
+					},
+					"name": "CustomerTraget",
+					"description": "CUSTOMER_TARGET"
+				}
+			],
+			"sinks": [
+				{
+					"dataset": {
+						"referenceName": "CUSTOMER_TARGET",
+						"type": "DatasetReference"
+					},
+					"name": "InsertNewRecordTGT"
+				},
+				{
+					"dataset": {
+						"referenceName": "CUSTOMER_TARGET",
+						"type": "DatasetReference"
+					},
+					"name": "UpdateOldRecordTGT",
+					"description": "Update CUST_END_DATE and IS_ACTIVE in CUSTOMER_TARGET"
+				},
+				{
+					"dataset": {
+						"referenceName": "CUSTOMER_TARGET",
+						"type": "DatasetReference"
+					},
+					"name": "InsertChangedRecordTGT"
+				}
+			],
+			"transformations": [
+				{
+					"name": "lookup",
+					"description": "Lookup On CUSTOMER_TARGET"
+				},
+				{
+					"name": "CustTable",
+					"description": "CUSTOMER_ID, \nCUSTOMER_NAME, \nCUSTOMER_CITY, \nADDRESS\n\n"
+				},
+				{
+					"name": "InsertOrUpdateFlag"
+				},
+				{
+					"name": "SplitInsertAndUpdate",
+					"description": "Split for insert and update"
+				},
+				{
+					"name": "derivedColumn1"
+				},
+				{
+					"name": "derivedColumn2",
+					"description": "Update CUST_END_DATE and IS_ACTIVE "
+				},
+				{
+					"name": "derivedColumn3",
+					"description": "Assign the value for inserting the record in CUSTOMER_TARGET"
+				},
+				{
+					"name": "alterRow1"
+				}
+			],
+			"scriptLines": [
+				"source(output(",
+				"          CUSTOMER_ID as decimal(38,0),",
+				"          CUSTOMER_NAME as string,",
+				"          CUSTOMER_CITY as string,",
+				"          ADDRESS as string,",
+				"          CONTACT_NUMBER as string,",
+				"          EMAIL_ID as string",
+				"     ),",
+				"     allowSchemaDrift: true,",
+				"     validateSchema: false,",
+				"     format: 'table') ~> SOURCE",
+				"source(output(",
+				"          CUSTOMER_ID as decimal(38,0),",
+				"          CUSTOMER_NAME as string,",
+				"          CUSTOMER_CITY as string,",
+				"          ADDRESS as string,",
+				"          CONTACT_NUMBER as string,",
+				"          EMAIL_ID as string,",
+				"          CUST_EFF_DATE as timestamp,",
+				"          CUST_END_DATE as timestamp,",
+				"          IS_ACTIVE as string",
+				"     ),",
+				"     allowSchemaDrift: true,",
+				"     validateSchema: false,",
+				"     query: 'SELECT \\n    CUSTOMER_ID AS CUSTOMER_ID,\\n    CUSTOMER_NAME AS CUSTOMER_NAME,\\n    CUSTOMER_CITY AS CUSTOMER_CITY,\\n    ADDRESS AS ADDRESS,\\n    CONTACT_NUMBER AS CONTACT_NUMBER,\\n    EMAIL_ID AS EMAIL_ID,\\n    CUST_EFF_DATE AS CUST_EFF_DATE,\\n    CUST_END_DATE AS CUST_END_DATE,\\n    IS_ACTIVE AS IS_ACTIVE\\nFROM CUSTOMER_TARGET\\nWHERE IS_ACTIVE = \\'A\\'\\n\\n',",
+				"     format: 'query') ~> CustomerTraget",
+				"SOURCE, CustTable lookup(CUSTOMER_ID == LKP_CUSTOMER_ID,",
+				"     multiple: false,",
+				"     pickup: 'any',",
+				"     broadcast: 'auto')~> lookup",
+				"CustomerTraget select(mapColumn(",
+				"          LKP_CUSTOMER_ID = CUSTOMER_ID,",
+				"          LKP_CUSTOMER_NAME = CUSTOMER_NAME,",
+				"          LKP_CUSTOMER_CITY = CUSTOMER_CITY,",
+				"          LKP_ADDRESS = ADDRESS",
+				"     ),",
+				"     skipDuplicateMapInputs: true,",
+				"     skipDuplicateMapOutputs: true) ~> CustTable",
+				"lookup derive(INSERT_FLAG = iif(isNull(LKP_CUSTOMER_ID),'TRUE','FALSE'),",
+				"          UPDATE_FLAG = iif(not(isNull(LKP_CUSTOMER_ID)) && \r",
+				"(CUSTOMER_CITY != LKP_CUSTOMER_CITY || ADDRESS != LKP_ADDRESS),'TRUE','FALSE')) ~> InsertOrUpdateFlag",
+				"InsertOrUpdateFlag split(INSERT_FLAG =='TRUE',",
+				"     UPDATE_FLAG=='TRUE',",
+				"     disjoint: false) ~> SplitInsertAndUpdate@(InserGroup, UpdateGroup, DEFAULT)",
+				"SplitInsertAndUpdate@InserGroup derive(CUST_EFF_DATE = currentTimestamp()) ~> derivedColumn1",
+				"derivedColumn3 derive(CUST_END_DATE = currentTimestamp(),",
+				"          IS_ACTIVE = 'N') ~> derivedColumn2",
+				"SplitInsertAndUpdate@UpdateGroup derive(CUST_EFF_DATE = currentTimestamp()) ~> derivedColumn3",
+				"derivedColumn2 alterRow(updateIf(not(isNull(LKP_CUSTOMER_ID))&&(CUSTOMER_CITY!=LKP_CUSTOMER_CITY||ADDRESS!=LKP_ADDRESS))) ~> alterRow1",
+				"derivedColumn1 sink(allowSchemaDrift: true,",
+				"     validateSchema: false,",
+				"     input(",
+				"          CUSTOMER_ID as decimal(38,0),",
+				"          CUSTOMER_NAME as string,",
+				"          CUSTOMER_CITY as string,",
+				"          ADDRESS as string,",
+				"          CONTACT_NUMBER as string,",
+				"          EMAIL_ID as string,",
+				"          CUST_EFF_DATE as timestamp,",
+				"          CUST_END_DATE as timestamp,",
+				"          IS_ACTIVE as string",
+				"     ),",
+				"     deletable:false,",
+				"     insertable:true,",
+				"     updateable:false,",
+				"     upsertable:false,",
+				"     format: 'table',",
+				"     skipDuplicateMapInputs: true,",
+				"     skipDuplicateMapOutputs: true,",
+				"     stageInsert: true,",
+				"     mapColumn(",
+				"          CUSTOMER_ID,",
+				"          CUSTOMER_NAME,",
+				"          CUSTOMER_CITY,",
+				"          ADDRESS,",
+				"          CONTACT_NUMBER,",
+				"          EMAIL_ID,",
+				"          CUST_EFF_DATE",
+				"     )) ~> InsertNewRecordTGT",
+				"alterRow1 sink(allowSchemaDrift: true,",
+				"     validateSchema: false,",
+				"     input(",
+				"          CUSTOMER_ID as decimal(38,0),",
+				"          CUSTOMER_NAME as string,",
+				"          CUSTOMER_CITY as string,",
+				"          ADDRESS as string,",
+				"          CONTACT_NUMBER as string,",
+				"          EMAIL_ID as string,",
+				"          CUST_EFF_DATE as timestamp,",
+				"          CUST_END_DATE as timestamp,",
+				"          IS_ACTIVE as string",
+				"     ),",
+				"     deletable:false,",
+				"     insertable:false,",
+				"     updateable:true,",
+				"     upsertable:false,",
+				"     keys:['CUSTOMER_ID'],",
+				"     format: 'table',",
+				"     skipDuplicateMapInputs: true,",
+				"     skipDuplicateMapOutputs: true,",
+				"     stageInsert: true,",
+				"     mapColumn(",
+				"          CUSTOMER_ID,",
+				"          CUST_END_DATE,",
+				"          IS_ACTIVE",
+				"     )) ~> UpdateOldRecordTGT",
+				"derivedColumn3 sink(allowSchemaDrift: true,",
+				"     validateSchema: false,",
+				"     input(",
+				"          CUSTOMER_ID as decimal(38,0),",
+				"          CUSTOMER_NAME as string,",
+				"          CUSTOMER_CITY as string,",
+				"          ADDRESS as string,",
+				"          CONTACT_NUMBER as string,",
+				"          EMAIL_ID as string,",
+				"          CUST_EFF_DATE as timestamp,",
+				"          CUST_END_DATE as timestamp,",
+				"          IS_ACTIVE as string",
+				"     ),",
+				"     deletable:false,",
+				"     insertable:true,",
+				"     updateable:false,",
+				"     upsertable:false,",
+				"     format: 'table',",
+				"     skipDuplicateMapInputs: true,",
+				"     skipDuplicateMapOutputs: true,",
+				"     stageInsert: true,",
+				"     mapColumn(",
+				"          CUSTOMER_ID,",
+				"          CUSTOMER_NAME,",
+				"          CUSTOMER_CITY,",
+				"          ADDRESS,",
+				"          CONTACT_NUMBER,",
+				"          EMAIL_ID,",
+				"          CUST_EFF_DATE",
+				"     )) ~> InsertChangedRecordTGT"
+			]
+		}
+	}
+}

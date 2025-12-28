@@ -1,0 +1,120 @@
+{
+	"name": "DS_M_SELLING_INVENTORY_STAG_SNOW",
+	"properties": {
+		"linkedServiceName": {
+			"referenceName": "LS_SNOWFLAKE_V2",
+			"type": "LinkedServiceReference"
+		},
+		"annotations": [],
+		"type": "SnowflakeV2Table",
+		"schema": [
+			{
+				"name": "ID",
+				"type": "NUMBER",
+				"precision": 38,
+				"scale": 0
+			},
+			{
+				"name": "SOURCE_SYSTEM_CODE",
+				"type": "VARCHAR"
+			},
+			{
+				"name": "SOURCE_CMG_ID",
+				"type": "VARCHAR"
+			},
+			{
+				"name": "SOURCE_PLANT_CODE",
+				"type": "VARCHAR"
+			},
+			{
+				"name": "SOURCE_STORAGE_LOCATION",
+				"type": "VARCHAR"
+			},
+			{
+				"name": "SOURCE_ITEM_CODE",
+				"type": "VARCHAR"
+			},
+			{
+				"name": "SOURCE_BATCH_NO",
+				"type": "VARCHAR"
+			},
+			{
+				"name": "SOURCE_ITEM_TYPE",
+				"type": "VARCHAR"
+			},
+			{
+				"name": "BATCH_STATUS_KEY",
+				"type": "VARCHAR"
+			},
+			{
+				"name": "BATCH_STOCK_TYPE",
+				"type": "VARCHAR"
+			},
+			{
+				"name": "QUANTITY",
+				"type": "NUMBER",
+				"precision": 38,
+				"scale": 0
+			},
+			{
+				"name": "UNIT_OF_MEASURE",
+				"type": "VARCHAR"
+			},
+			{
+				"name": "LOADED_FLAG",
+				"type": "VARCHAR"
+			},
+			{
+				"name": "AI_UOM_QUANTITY",
+				"type": "NUMBER",
+				"precision": 22,
+				"scale": 10
+			},
+			{
+				"name": "ACTIVE_INGREDIENT_UOM",
+				"type": "VARCHAR"
+			},
+			{
+				"name": "QC_BATCH_POTENCY",
+				"type": "VARCHAR"
+			},
+			{
+				"name": "DEFAULT_BATCH_POTENCY",
+				"type": "VARCHAR"
+			},
+			{
+				"name": "VENDOR_CODE",
+				"type": "VARCHAR"
+			},
+			{
+				"name": "BATCH_STATUS",
+				"type": "VARCHAR"
+			},
+			{
+				"name": "ERP_CREATION_DATE",
+				"type": "TIMESTAMP_NTZ"
+			},
+			{
+				"name": "EXTERNAL_SYSTEM_CREATION_DATE",
+				"type": "TIMESTAMP_NTZ"
+			},
+			{
+				"name": "AVAILABLE_DATE",
+				"type": "TIMESTAMP_NTZ"
+			},
+			{
+				"name": "MIC_PROCESS_DATE",
+				"type": "TIMESTAMP_NTZ"
+			},
+			{
+				"name": "EXPIRY_DATE",
+				"type": "TIMESTAMP_NTZ"
+			}
+		],
+		"typeProperties": {
+			"schema": "TRAINING",
+			"table": "M_SELLING_INVENTORY_STAG"
+		}
+	},
+	"type": "Microsoft.DataFactory/factories/datasets"
+}

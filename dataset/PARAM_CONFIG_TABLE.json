@@ -1,0 +1,30 @@
+{
+	"name": "PARAM_CONFIG_TABLE",
+	"properties": {
+		"linkedServiceName": {
+			"referenceName": "LS_SNOWFLAKE_V2",
+			"type": "LinkedServiceReference"
+		},
+		"annotations": [],
+		"type": "SnowflakeV2Table",
+		"schema": [
+			{
+				"name": "TABLE_NAME",
+				"type": "VARCHAR"
+			},
+			{
+				"name": "SCHEMA_NAME",
+				"type": "VARCHAR"
+			},
+			{
+				"name": "FILE_NAME",
+				"type": "VARCHAR"
+			}
+		],
+		"typeProperties": {
+			"schema": "MICSTAG",
+			"table": "PARAM_CONFIG_TABLE"
+		}
+	},
+	"type": "Microsoft.DataFactory/factories/datasets"
+}

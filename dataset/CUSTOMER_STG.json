@@ -1,0 +1,44 @@
+{
+	"name": "CUSTOMER_STG",
+	"properties": {
+		"linkedServiceName": {
+			"referenceName": "LS_SNOWFLAKE_V2",
+			"type": "LinkedServiceReference"
+		},
+		"annotations": [],
+		"type": "SnowflakeV2Table",
+		"schema": [
+			{
+				"name": "CUSTOMER_ID",
+				"type": "NUMBER",
+				"precision": 38,
+				"scale": 0
+			},
+			{
+				"name": "CUSTOMER_NAME",
+				"type": "VARCHAR"
+			},
+			{
+				"name": "CUSTOMER_CITY",
+				"type": "VARCHAR"
+			},
+			{
+				"name": "ADDRESS",
+				"type": "VARCHAR"
+			},
+			{
+				"name": "CONTACT_NUMBER",
+				"type": "VARCHAR"
+			},
+			{
+				"name": "EMAIL_ID",
+				"type": "VARCHAR"
+			}
+		],
+		"typeProperties": {
+			"schema": "TRAINING",
+			"table": "CUSTOMER_STG"
+		}
+	},
+	"type": "Microsoft.DataFactory/factories/datasets"
+}

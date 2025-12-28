@@ -1,0 +1,179 @@
+{
+	"name": "DF_CP_M_SELLING_INVENTORY_STAG",
+	"properties": {
+		"type": "MappingDataFlow",
+		"typeProperties": {
+			"sources": [
+				{
+					"dataset": {
+						"referenceName": "DS_M_SELLING_INVENTORY_STAG_BLOB",
+						"type": "DatasetReference"
+					},
+					"name": "SOURCE",
+					"description": "Add source dataset M_SELLING_INVENTORY_STAG"
+				}
+			],
+			"sinks": [
+				{
+					"dataset": {
+						"referenceName": "DS_M_SELLING_INVENTORY_STAG_SNOW",
+						"type": "DatasetReference"
+					},
+					"name": "TAREGT",
+					"description": "TARGET TABLE IS M_SELLING_INVENTORY_STAG"
+				},
+				{
+					"dataset": {
+						"referenceName": "DS_ETL_LAST_RUN",
+						"type": "DatasetReference"
+					},
+					"name": "TargetParamFile"
+				}
+			],
+			"transformations": [
+				{
+					"name": "SORT",
+					"description": "Sort by ID"
+				},
+				{
+					"name": "derivedColumn",
+					"description": "Setting some value for quantity column"
+				},
+				{
+					"name": "filterDataIncreamentally"
+				},
+				{
+					"name": "maxErpCreationDate"
+				},
+				{
+					"name": "PrepareParamRow",
+					"description": "Prepare the row for paramfile"
+				},
+				{
+					"name": "AddColumnForGroupByPort"
+				}
+			],
+			"scriptLines": [
+				"parameters{",
+				"     DF_LAST_LOADED_DATE as string",
+				"}",
+				"source(output(",
+				"          ID as integer,",
+				"          SOURCE_SYSTEM_CODE as string,",
+				"          SOURCE_CMG_ID as string,",
+				"          SOURCE_PLANT_CODE as string,",
+				"          SOURCE_STORAGE_LOCATION as string,",
+				"          SOURCE_ITEM_CODE as string,",
+				"          SOURCE_BATCH_NO as string,",
+				"          SOURCE_ITEM_TYPE as string,",
+				"          BATCH_STATUS_KEY as string,",
+				"          BATCH_STOCK_TYPE as string,",
+				"          QUANTITY as integer,",
+				"          UNIT_OF_MEASURE as string,",
+				"          LOADED_FLAG as string,",
+				"          AI_UOM_QUANTITY as integer,",
+				"          ACTIVE_INGREDIENT_UOM as string,",
+				"          QC_BATCH_POTENCY as string,",
+				"          DEFAULT_BATCH_POTENCY as string,",
+				"          VENDOR_CODE as string,",
+				"          BATCH_STATUS as string,",
+				"          ERP_CREATION_DATE as timestamp,",
+				"          EXTERNAL_SYSTEM_CREATION_DATE as timestamp,",
+				"          AVAILABLE_DATE as timestamp,",
+				"          MIC_PROCESS_DATE as timestamp,",
+				"          EXPIRY_DATE as timestamp",
+				"     ),",
+				"     allowSchemaDrift: true,",
+				"     validateSchema: false,",
+				"     ignoreNoFilesFound: false) ~> SOURCE",
+				"filterDataIncreamentally sort(asc(ID, true),",
+				"     caseInsensitive: true) ~> SORT",
+				"SORT derive(QUANTITY = iif(isNull(QUANTITY), -1, QUANTITY)) ~> derivedColumn",
+				"SOURCE filter(ERP_CREATION_DATE > toTimestamp($DF_LAST_LOADED_DATE, 'dd-MM-yyyy HH:mm:ss')) ~> filterDataIncreamentally",
+				"AddColumnForGroupByPort aggregate(groupBy(TABLE_NAME),",
+				"     MAX_ERP_CREATION_DATE = max(ERP_CREATION_DATE)) ~> maxErpCreationDate",
+				"maxErpCreationDate derive(LAST_LOADED_DATE = iif(not(isNull(toString(MAX_ERP_CREATION_DATE, 'dd-MM-yyyy HH:mm:ss'))),toString(MAX_ERP_CREATION_DATE, 'dd-MM-yyyy HH:mm:ss'),$DF_LAST_LOADED_DATE)) ~> PrepareParamRow",
+				"filterDataIncreamentally derive(TABLE_NAME = 'M_SELLING_INVENTORY_STAG') ~> AddColumnForGroupByPort",
+				"derivedColumn sink(allowSchemaDrift: true,",
+				"     validateSchema: false,",
+				"     input(",
+				"          ID as decimal(38,0),",
+				"          SOURCE_SYSTEM_CODE as string,",
+				"          SOURCE_CMG_ID as string,",
+				"          SOURCE_PLANT_CODE as string,",
+				"          SOURCE_STORAGE_LOCATION as string,",
+				"          SOURCE_ITEM_CODE as string,",
+				"          SOURCE_BATCH_NO as string,",
+				"          SOURCE_ITEM_TYPE as string,",
+				"          BATCH_STATUS_KEY as string,",
+				"          BATCH_STOCK_TYPE as string,",
+				"          QUANTITY as decimal(38,0),",
+				"          UNIT_OF_MEASURE as string,",
+				"          LOADED_FLAG as string,",
+				"          AI_UOM_QUANTITY as decimal(22,10),",
+				"          ACTIVE_INGREDIENT_UOM as string,",
+				"          QC_BATCH_POTENCY as string,",
+				"          DEFAULT_BATCH_POTENCY as string,",
+				"          VENDOR_CODE as string,",
+				"          BATCH_STATUS as string,",
+				"          ERP_CREATION_DATE as timestamp,",
+				"          EXTERNAL_SYSTEM_CREATION_DATE as timestamp,",
+				"          AVAILABLE_DATE as timestamp,",
+				"          MIC_PROCESS_DATE as timestamp,",
+				"          EXPIRY_DATE as timestamp",
+				"     ),",
+				"     deletable:false,",
+				"     insertable:true,",
+				"     updateable:false,",
+				"     upsertable:false,",
+				"     format: 'table',",
+				"     skipDuplicateMapInputs: true,",
+				"     skipDuplicateMapOutputs: true,",
+				"     saveOrder: 1,",
+				"     stageInsert: true,",
+				"     mapColumn(",
+				"          ID,",
+				"          SOURCE_SYSTEM_CODE,",
+				"          SOURCE_CMG_ID,",
+				"          SOURCE_PLANT_CODE,",
+				"          SOURCE_STORAGE_LOCATION,",
+				"          SOURCE_ITEM_CODE,",
+				"          SOURCE_BATCH_NO,",
+				"          SOURCE_ITEM_TYPE,",
+				"          BATCH_STATUS_KEY,",
+				"          BATCH_STOCK_TYPE,",
+				"          QUANTITY,",
+				"          UNIT_OF_MEASURE,",
+				"          LOADED_FLAG,",
+				"          AI_UOM_QUANTITY,",
+				"          ACTIVE_INGREDIENT_UOM,",
+				"          QC_BATCH_POTENCY,",
+				"          DEFAULT_BATCH_POTENCY,",
+				"          VENDOR_CODE,",
+				"          BATCH_STATUS,",
+				"          ERP_CREATION_DATE,",
+				"          EXTERNAL_SYSTEM_CREATION_DATE,",
+				"          AVAILABLE_DATE,",
+				"          MIC_PROCESS_DATE,",
+				"          EXPIRY_DATE",
+				"     )) ~> TAREGT",
+				"PrepareParamRow sink(allowSchemaDrift: true,",
+				"     validateSchema: false,",
+				"     input(",
+				"          LAST_LOADED_DATE as string",
+				"     ),",
+				"     partitionFileNames:['ETL_LAST_RUN.json'],",
+				"     umask: 0777,",
+				"     preCommands: [],",
+				"     postCommands: [],",
+				"     skipDuplicateMapInputs: true,",
+				"     skipDuplicateMapOutputs: true,",
+				"     saveOrder: 2,",
+				"     mapColumn(",
+				"          LAST_LOADED_DATE",
+				"     ),",
+				"     partitionBy('hash', 1)) ~> TargetParamFile"
+			]
+		}
+	}
+}

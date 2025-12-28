@@ -1,0 +1,121 @@
+{
+	"name": "DS_M_SELLING_INVENTORY_STAG_BLOB",
+	"properties": {
+		"linkedServiceName": {
+			"referenceName": "LS_AZURE_DATA_LAKE",
+			"type": "LinkedServiceReference"
+		},
+		"annotations": [],
+		"type": "DelimitedText",
+		"typeProperties": {
+			"location": {
+				"type": "AzureBlobFSLocation",
+				"fileName": "M_SELLING_INVENTORY_STAG.csv",
+				"fileSystem": "raw"
+			},
+			"columnDelimiter": ",",
+			"escapeChar": "\\",
+			"firstRowAsHeader": true,
+			"quoteChar": "\""
+		},
+		"schema": [
+			{
+				"name": "ID",
+				"type": "String"
+			},
+			{
+				"name": "SOURCE_SYSTEM_CODE",
+				"type": "String"
+			},
+			{
+				"name": "SOURCE_CMG_ID",
+				"type": "String"
+			},
+			{
+				"name": "SOURCE_PLANT_CODE",
+				"type": "String"
+			},
+			{
+				"name": "SOURCE_STORAGE_LOCATION",
+				"type": "String"
+			},
+			{
+				"name": "SOURCE_ITEM_CODE",
+				"type": "String"
+			},
+			{
+				"name": "SOURCE_BATCH_NO",
+				"type": "String"
+			},
+			{
+				"name": "SOURCE_ITEM_TYPE",
+				"type": "String"
+			},
+			{
+				"name": "BATCH_STATUS_KEY",
+				"type": "String"
+			},
+			{
+				"name": "BATCH_STOCK_TYPE",
+				"type": "String"
+			},
+			{
+				"name": "QUANTITY",
+				"type": "String"
+			},
+			{
+				"name": "UNIT_OF_MEASURE",
+				"type": "String"
+			},
+			{
+				"name": "LOADED_FLAG",
+				"type": "String"
+			},
+			{
+				"name": "AI_UOM_QUANTITY",
+				"type": "String"
+			},
+			{
+				"name": "ACTIVE_INGREDIENT_UOM",
+				"type": "String"
+			},
+			{
+				"name": "QC_BATCH_POTENCY",
+				"type": "String"
+			},
+			{
+				"name": "DEFAULT_BATCH_POTENCY",
+				"type": "String"
+			},
+			{
+				"name": "VENDOR_CODE",
+				"type": "String"
+			},
+			{
+				"name": "BATCH_STATUS",
+				"type": "String"
+			},
+			{
+				"name": "ERP_CREATION_DATE",
+				"type": "String"
+			},
+			{
+				"name": "EXTERNAL_SYSTEM_CREATION_DATE",
+				"type": "String"
+			},
+			{
+				"name": "AVAILABLE_DATE",
+				"type": "String"
+			},
+			{
+				"name": "MIC_PROCESS_DATE",
+				"type": "String"
+			},
+			{
+				"name": "EXPIRY_DATE",
+				"type": "String"
+			}
+		]
+	},
+	"type": "Microsoft.DataFactory/factories/datasets"
+}

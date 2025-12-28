@@ -1,0 +1,59 @@
+{
+	"name": "DF_CP_SNOW_TO_SNOW_TEST",
+	"properties": {
+		"type": "MappingDataFlow",
+		"typeProperties": {
+			"sources": [
+				{
+					"dataset": {
+						"referenceName": "SRC_CUSTOMER",
+						"type": "DatasetReference"
+					},
+					"name": "source1"
+				}
+			],
+			"sinks": [
+				{
+					"dataset": {
+						"referenceName": "TGT_CUSTOMER",
+						"type": "DatasetReference"
+					},
+					"name": "sink1"
+				}
+			],
+			"transformations": [],
+			"scriptLines": [
+				"source(output(",
+				"          CUSTOMER_ID as string,",
+				"          CUSTOMER_NAME as string,",
+				"          CUSTOMER_EMAIL as string,",
+				"          CUSTOMER_CITY as string,",
+				"          CUSTOMER_STATE as string,",
+				"          CUSTOMER_DOB as date",
+				"     ),",
+				"     allowSchemaDrift: true,",
+				"     validateSchema: false,",
+				"     format: 'table') ~> source1",
+				"source1 sink(allowSchemaDrift: true,",
+				"     validateSchema: false,",
+				"     input(",
+				"          CUSTOMER_ID as string,",
+				"          CUSTOMER_NAME as string,",
+				"          CUSTOMER_EMAIL as string,",
+				"          CUSTOMER_CITY as string,",
+				"          CUSTOMER_STATE as string,",
+				"          CUSTOMER_DOB as date",
+				"     ),",
+				"     deletable:false,",
+				"     insertable:true,",
+				"     updateable:false,",
+				"     upsertable:false,",
+				"     truncate:true,",
+				"     format: 'table',",
+				"     skipDuplicateMapInputs: true,",
+				"     skipDuplicateMapOutputs: true,",
+				"     stageInsert: true) ~> sink1"
+			]
+		}
+	}
+}

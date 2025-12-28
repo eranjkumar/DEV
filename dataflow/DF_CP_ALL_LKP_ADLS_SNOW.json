@@ -1,0 +1,49 @@
+{
+	"name": "DF_CP_ALL_LKP_ADLS_SNOW",
+	"properties": {
+		"type": "MappingDataFlow",
+		"typeProperties": {
+			"sources": [
+				{
+					"dataset": {
+						"referenceName": "DS_ALL_LKP_ADLS",
+						"type": "DatasetReference"
+					},
+					"name": "SrcAllLkpFiles"
+				}
+			],
+			"sinks": [
+				{
+					"dataset": {
+						"referenceName": "DS_ALL_LKP_SNOW",
+						"type": "DatasetReference"
+					},
+					"name": "TgtAllLkpTables"
+				}
+			],
+			"transformations": [
+				{
+					"name": "PassThrough"
+				}
+			],
+			"scriptLines": [
+				"source(allowSchemaDrift: true,",
+				"     validateSchema: false,",
+				"     ignoreNoFilesFound: false) ~> SrcAllLkpFiles",
+				"SrcAllLkpFiles select(skipDuplicateMapInputs: true,",
+				"     skipDuplicateMapOutputs: true) ~> PassThrough",
+				"PassThrough sink(allowSchemaDrift: true,",
+				"     validateSchema: false,",
+				"     deletable:false,",
+				"     insertable:true,",
+				"     updateable:false,",
+				"     upsertable:false,",
+				"     truncate:true,",
+				"     format: 'table',",
+				"     skipDuplicateMapInputs: true,",
+				"     skipDuplicateMapOutputs: true,",
+				"     stageInsert: true) ~> TgtAllLkpTables"
+			]
+		}
+	}
+}

@@ -1,0 +1,28 @@
+{
+	"name": "DS_ETL_LAST_RUN",
+	"properties": {
+		"linkedServiceName": {
+			"referenceName": "LS_AZURE_DATA_LAKE",
+			"type": "LinkedServiceReference"
+		},
+		"annotations": [],
+		"type": "Json",
+		"typeProperties": {
+			"location": {
+				"type": "AzureBlobFSLocation",
+				"fileName": "ETL_LAST_RUN.json",
+				"folderPath": "PARAM",
+				"fileSystem": "bronze"
+			}
+		},
+		"schema": {
+			"type": "object",
+			"properties": {
+				"LAST_LOADED_DATE": {
+					"type": "string"
+				}
+			}
+		}
+	},
+	"type": "Microsoft.DataFactory/factories/datasets"
+}

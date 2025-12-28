@@ -1,0 +1,106 @@
+{
+	"name": "PL_DF_CP_M_SELLING_INVENTORY_STAG",
+	"properties": {
+		"activities": [
+			{
+				"name": "DF_CP_M_SELLING_INVENTORY_STAG",
+				"type": "ExecuteDataFlow",
+				"dependsOn": [
+					{
+						"activity": "SetVariableLastLoadedDate",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
+				"policy": {
+					"timeout": "0.12:00:00",
+					"retry": 0,
+					"retryIntervalInSeconds": 30,
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"dataflow": {
+						"referenceName": "DF_CP_M_SELLING_INVENTORY_STAG",
+						"type": "DataFlowReference",
+						"parameters": {
+							"DF_LAST_LOADED_DATE": {
+								"value": "'@{variables('LAST_LOADED_DATE')}'",
+								"type": "Expression"
+							}
+						}
+					},
+					"compute": {
+						"coreCount": 8,
+						"computeType": "General"
+					},
+					"traceLevel": "Fine"
+				}
+			},
+			{
+				"name": "LookupParamFile",
+				"type": "Lookup",
+				"dependsOn": [],
+				"policy": {
+					"timeout": "0.12:00:00",
+					"retry": 0,
+					"retryIntervalInSeconds": 30,
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"source": {
+						"type": "JsonSource",
+						"storeSettings": {
+							"type": "AzureBlobFSReadSettings",
+							"recursive": true,
+							"enablePartitionDiscovery": false
+						},
+						"formatSettings": {
+							"type": "JsonReadSettings"
+						}
+					},
+					"dataset": {
+						"referenceName": "DS_ETL_LAST_RUN",
+						"type": "DatasetReference"
+					}
+				}
+			},
+			{
+				"name": "SetVariableLastLoadedDate",
+				"type": "SetVariable",
+				"dependsOn": [
+					{
+						"activity": "LookupParamFile",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
+				"policy": {
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"variableName": "LAST_LOADED_DATE",
+					"value": {
+						"value": "@activity('LookupParamFile').output.firstRow.LAST_LOADED_DATE",
+						"type": "Expression"
+					}
+				}
+			}
+		],
+		"variables": {
+			"LAST_LOADED_DATE": {
+				"type": "String"
+			}
+		},
+		"annotations": [],
+		"lastPublishTime": "2025-12-28T13:29:53Z"
+	},
+	"type": "Microsoft.DataFactory/factories/pipelines"
+}

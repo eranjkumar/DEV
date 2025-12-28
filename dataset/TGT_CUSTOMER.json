@@ -1,0 +1,42 @@
+{
+	"name": "TGT_CUSTOMER",
+	"properties": {
+		"linkedServiceName": {
+			"referenceName": "LS_SNOWFLAKE_V2",
+			"type": "LinkedServiceReference"
+		},
+		"annotations": [],
+		"type": "SnowflakeV2Table",
+		"schema": [
+			{
+				"name": "CUSTOMER_ID",
+				"type": "VARCHAR"
+			},
+			{
+				"name": "CUSTOMER_NAME",
+				"type": "VARCHAR"
+			},
+			{
+				"name": "CUSTOMER_EMAIL",
+				"type": "VARCHAR"
+			},
+			{
+				"name": "CUSTOMER_CITY",
+				"type": "VARCHAR"
+			},
+			{
+				"name": "CUSTOMER_STATE",
+				"type": "VARCHAR"
+			},
+			{
+				"name": "CUSTOMER_DOB",
+				"type": "DATE"
+			}
+		],
+		"typeProperties": {
+			"schema": "TRAINING",
+			"table": "CUSTOMER_TGT"
+		}
+	},
+	"type": "Microsoft.DataFactory/factories/datasets"
+}

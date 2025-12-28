@@ -1,0 +1,19 @@
+{
+	"name": "CP_ALL_BRONZE",
+	"properties": {
+		"linkedServiceName": {
+			"referenceName": "LS_AZURE_DATA_LAKE",
+			"type": "LinkedServiceReference"
+		},
+		"annotations": [],
+		"type": "Json",
+		"typeProperties": {
+			"location": {
+				"type": "AzureBlobFSLocation",
+				"fileSystem": "bronze"
+			}
+		},
+		"schema": {}
+	},
+	"type": "Microsoft.DataFactory/factories/datasets"
+}

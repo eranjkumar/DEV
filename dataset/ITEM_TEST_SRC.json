@@ -1,0 +1,674 @@
+{
+	"name": "ITEM_TEST_SRC",
+	"properties": {
+		"linkedServiceName": {
+			"referenceName": "LS_AZURE_DATA_LAKE",
+			"type": "LinkedServiceReference"
+		},
+		"annotations": [],
+		"type": "Parquet",
+		"typeProperties": {
+			"location": {
+				"type": "AzureBlobFSLocation",
+				"fileName": "item.parquet",
+				"fileSystem": "bronze"
+			},
+			"compressionCodec": "snappy"
+		},
+		"schema": [
+			{
+				"name": "ITEMID",
+				"type": "UTF8"
+			},
+			{
+				"name": "ITEMDESCRIPTION",
+				"type": "UTF8"
+			},
+			{
+				"name": "ITEMTYPE",
+				"type": "UTF8"
+			},
+			{
+				"name": "LEVEL4MEMBERID",
+				"type": "UTF8"
+			},
+			{
+				"name": "LEVEL4MEMBERDESCRIPTION",
+				"type": "UTF8"
+			},
+			{
+				"name": "LEVEL3MEMBERID",
+				"type": "UTF8"
+			},
+			{
+				"name": "LEVEL3MEMBERDESCRIPTION",
+				"type": "UTF8"
+			},
+			{
+				"name": "LEVEL2MEMBERID",
+				"type": "UTF8"
+			},
+			{
+				"name": "LEVEL2MEMBERDESCRIPTION",
+				"type": "UTF8"
+			},
+			{
+				"name": "LEVEL1MEMBERID",
+				"type": "UTF8"
+			},
+			{
+				"name": "LEVEL1MEMBERDESCRIPTION",
+				"type": "UTF8"
+			},
+			{
+				"name": "ATTRSUPPLYTYPE",
+				"type": "UTF8"
+			},
+			{
+				"name": "ATTRORIGITEM",
+				"type": "UTF8"
+			},
+			{
+				"name": "ATTRVERSION",
+				"type": "UTF8"
+			},
+			{
+				"name": "UNITCOST",
+				"type": "DOUBLE"
+			},
+			{
+				"name": "ISNEWITEM",
+				"type": "BOOLEAN"
+			},
+			{
+				"name": "ITEMCLASS",
+				"type": "UTF8"
+			},
+			{
+				"name": "HANDLINGINSTRUCTIONCODE",
+				"type": "UTF8"
+			},
+			{
+				"name": "ITEMFAMILYGROUP",
+				"type": "UTF8"
+			},
+			{
+				"name": "VOLUME",
+				"type": "DECIMAL",
+				"precision": 12,
+				"scale": 4
+			},
+			{
+				"name": "UNITSPERPALLET",
+				"type": "DECIMAL",
+				"precision": 12,
+				"scale": 4
+			},
+			{
+				"name": "ITEMPRIORITYATTRIB",
+				"type": "UTF8"
+			},
+			{
+				"name": "UNITCONV1",
+				"type": "DOUBLE"
+			},
+			{
+				"name": "UNITCONV2",
+				"type": "DOUBLE"
+			},
+			{
+				"name": "UNITCONV3",
+				"type": "DOUBLE"
+			},
+			{
+				"name": "UNITCONV4",
+				"type": "DOUBLE"
+			},
+			{
+				"name": "GROSSWEIGHT",
+				"type": "DECIMAL",
+				"precision": 12,
+				"scale": 4
+			},
+			{
+				"name": "BASEUOM",
+				"type": "UTF8"
+			},
+			{
+				"name": "USEDYNDEPFROMITEMLOCDEPLOYMENTPARAM",
+				"type": "BOOLEAN"
+			},
+			{
+				"name": "USETRANSPORTCOSTFROMDYNDEPSRC",
+				"type": "BOOLEAN"
+			},
+			{
+				"name": "DYNDEPDECIMALS",
+				"type": "DECIMAL",
+				"precision": 38,
+				"scale": 0
+			},
+			{
+				"name": "DYNDEPOPTION",
+				"type": "DECIMAL",
+				"precision": 38,
+				"scale": 0
+			},
+			{
+				"name": "DYNDEPPUSHOPTION",
+				"type": "DECIMAL",
+				"precision": 38,
+				"scale": 0
+			},
+			{
+				"name": "DYNDEPQTY",
+				"type": "DOUBLE"
+			},
+			{
+				"name": "OPTIONCLASS",
+				"type": "UTF8"
+			},
+			{
+				"name": "ITEMSOURCINGSTRATEGY",
+				"type": "UTF8"
+			},
+			{
+				"name": "OPTIONS",
+				"type": "UTF8"
+			},
+			{
+				"name": "DISABLENETTINGPLANNING",
+				"type": "UTF8"
+			},
+			{
+				"name": "ISSHORTLIFECYCLEITEM",
+				"type": "BOOLEAN"
+			},
+			{
+				"name": "ISPARENTITEM",
+				"type": "BOOLEAN"
+			},
+			{
+				"name": "UDC_TA",
+				"type": "UTF8"
+			},
+			{
+				"name": "UDC_ACTIVEPRINCIPLE",
+				"type": "UTF8"
+			},
+			{
+				"name": "UDC_CONTAINER",
+				"type": "UTF8"
+			},
+			{
+				"name": "UDC_MARKET",
+				"type": "UTF8"
+			},
+			{
+				"name": "UDC_MFGSOURCE",
+				"type": "UTF8"
+			},
+			{
+				"name": "UDC_PACKSIZE",
+				"type": "DECIMAL",
+				"precision": 12,
+				"scale": 0
+			},
+			{
+				"name": "UDC_PHARMAFORM",
+				"type": "UTF8"
+			},
+			{
+				"name": "UDC_PRODUCTTYPE",
+				"type": "UTF8"
+			},
+			{
+				"name": "UDC_ITEMSTATUS",
+				"type": "UTF8"
+			},
+			{
+				"name": "UDC_EQUNITS",
+				"type": "DECIMAL",
+				"precision": 30,
+				"scale": 2
+			},
+			{
+				"name": "UDC_BRAND",
+				"type": "UTF8"
+			},
+			{
+				"name": "UDC_TADESCR",
+				"type": "UTF8"
+			},
+			{
+				"name": "UDC_BRANDDESCR",
+				"type": "UTF8"
+			},
+			{
+				"name": "UDC_STRENGTHDESCR",
+				"type": "UTF8"
+			},
+			{
+				"name": "UDC_MP_RELEVANT",
+				"type": "UTF8"
+			},
+			{
+				"name": "UDC_FAMILY",
+				"type": "UTF8"
+			},
+			{
+				"name": "UDC_CORPDESCR",
+				"type": "UTF8"
+			},
+			{
+				"name": "UDC_SOPSW",
+				"type": "BOOLEAN"
+			},
+			{
+				"name": "UDC_TPREGION",
+				"type": "UTF8"
+			},
+			{
+				"name": "UDC_DIVISION",
+				"type": "UTF8"
+			},
+			{
+				"name": "UDC_MULTIDEST",
+				"type": "BOOLEAN"
+			},
+			{
+				"name": "UDC_MULTISOURCE",
+				"type": "BOOLEAN"
+			},
+			{
+				"name": "UDC_BRANDPRIO",
+				"type": "DECIMAL",
+				"precision": 22,
+				"scale": 0
+			},
+			{
+				"name": "UDC_ITEMEXCEPTION",
+				"type": "DECIMAL",
+				"precision": 22,
+				"scale": 0
+			},
+			{
+				"name": "UDC_PACK_SITE",
+				"type": "UTF8"
+			},
+			{
+				"name": "UDC_PROD_SITE",
+				"type": "UTF8"
+			},
+			{
+				"name": "UDC_API_SITE",
+				"type": "UTF8"
+			},
+			{
+				"name": "UDC_GPSNAME",
+				"type": "UTF8"
+			},
+			{
+				"name": "UDC_GROUPING",
+				"type": "UTF8"
+			},
+			{
+				"name": "UDC_NBUNITSPERHNDLG",
+				"type": "DECIMAL",
+				"precision": 12,
+				"scale": 0
+			},
+			{
+				"name": "UDC_NBHNDLGPERPALLET",
+				"type": "DECIMAL",
+				"precision": 12,
+				"scale": 0
+			},
+			{
+				"name": "UDC_NBHNDLGPERLAYER",
+				"type": "DECIMAL",
+				"precision": 12,
+				"scale": 0
+			},
+			{
+				"name": "UDC_PACKMODULE",
+				"type": "UTF8"
+			},
+			{
+				"name": "UDC_STORAGECONDITION",
+				"type": "UTF8"
+			},
+			{
+				"name": "UDC_GRP1",
+				"type": "UTF8"
+			},
+			{
+				"name": "UDC_GRP2",
+				"type": "UTF8"
+			},
+			{
+				"name": "UDC_GRP3",
+				"type": "UTF8"
+			},
+			{
+				"name": "UDC_GRP4",
+				"type": "UTF8"
+			},
+			{
+				"name": "UDC_CREATEDBY",
+				"type": "UTF8"
+			},
+			{
+				"name": "UDC_CREATIONDATE",
+				"type": "DATE"
+			},
+			{
+				"name": "UDC_LASTUPDATEDATE",
+				"type": "DATE"
+			},
+			{
+				"name": "UDC_LASTUPDATEDBY",
+				"type": "UTF8"
+			},
+			{
+				"name": "UDC_FACTOR",
+				"type": "DECIMAL",
+				"precision": 14,
+				"scale": 4
+			},
+			{
+				"name": "UDC_ACTIVITY",
+				"type": "UTF8"
+			},
+			{
+				"name": "UDC_CRITICITY",
+				"type": "DECIMAL",
+				"precision": 30,
+				"scale": 2
+			},
+			{
+				"name": "UDC_NPISW",
+				"type": "BOOLEAN"
+			},
+			{
+				"name": "UDC_SIZETOBRAND",
+				"type": "DECIMAL",
+				"precision": 18,
+				"scale": 6
+			},
+			{
+				"name": "UDC_ARCPROJSTATICSW",
+				"type": "BOOLEAN"
+			},
+			{
+				"name": "UDC_PACKSPERPALLET",
+				"type": "DECIMAL",
+				"precision": 38,
+				"scale": 5
+			},
+			{
+				"name": "UDC_RESTRICT_SW",
+				"type": "BOOLEAN"
+			},
+			{
+				"name": "UDC_STACKINGPERPACK",
+				"type": "DECIMAL",
+				"precision": 38,
+				"scale": 0
+			},
+			{
+				"name": "UDC_NBTABSPERBLISTER",
+				"type": "DECIMAL",
+				"precision": 22,
+				"scale": 0
+			},
+			{
+				"name": "UDC_MTS_MTO",
+				"type": "DECIMAL",
+				"precision": 30,
+				"scale": 2
+			},
+			{
+				"name": "UDC_NEW",
+				"type": "BOOLEAN"
+			},
+			{
+				"name": "UDC_STRENGTH",
+				"type": "UTF8"
+			},
+			{
+				"name": "UDC_DOSETOMCG",
+				"type": "DECIMAL",
+				"precision": 38,
+				"scale": 10
+			},
+			{
+				"name": "UDC_DOSETOIU",
+				"type": "DECIMAL",
+				"precision": 38,
+				"scale": 0
+			},
+			{
+				"name": "UDC_DMDUNITLEVEL",
+				"type": "DECIMAL",
+				"precision": 38,
+				"scale": 0
+			},
+			{
+				"name": "UDC_BOXTODOSES",
+				"type": "DECIMAL",
+				"precision": 38,
+				"scale": 0
+			},
+			{
+				"name": "UDC_PACKSIZEDESCR",
+				"type": "UTF8"
+			},
+			{
+				"name": "UDC_FAMILYGRPDESCR",
+				"type": "UTF8"
+			},
+			{
+				"name": "UDC_LOCALPRODUCTSW",
+				"type": "UTF8"
+			},
+			{
+				"name": "UDC_SIZETOSTRENGTH",
+				"type": "DECIMAL",
+				"precision": 38,
+				"scale": 10
+			},
+			{
+				"name": "UDC_LRPDUMMY",
+				"type": "BOOLEAN"
+			},
+			{
+				"name": "UDC_LRPPRODLEVEL",
+				"type": "UTF8"
+			},
+			{
+				"name": "UDC_LRPSCOPE",
+				"type": "BOOLEAN"
+			},
+			{
+				"name": "UDC_GPH",
+				"type": "UTF8"
+			},
+			{
+				"name": "UDC_GPHDESCR",
+				"type": "UTF8"
+			},
+			{
+				"name": "UDC_PACKAGINGSTYLE",
+				"type": "UTF8"
+			},
+			{
+				"name": "UDC_ACTIVEINGR",
+				"type": "UTF8"
+			},
+			{
+				"name": "UDC_SUPPLIERNAME",
+				"type": "UTF8"
+			},
+			{
+				"name": "UDC_PRODCONFIG",
+				"type": "UTF8"
+			},
+			{
+				"name": "UDC_PRODMACROCONFIG",
+				"type": "UTF8"
+			},
+			{
+				"name": "UDC_MACROCONFIGDESCR",
+				"type": "UTF8"
+			},
+			{
+				"name": "UDC_DMDUNITEXCEPTION",
+				"type": "DECIMAL",
+				"precision": 38,
+				"scale": 0
+			},
+			{
+				"name": "UDC_PROJECTREF",
+				"type": "UTF8"
+			},
+			{
+				"name": "UDC_SECPACKPERBOX",
+				"type": "DECIMAL",
+				"precision": 38,
+				"scale": 10
+			},
+			{
+				"name": "UDC_PACKERMFG",
+				"type": "UTF8"
+			},
+			{
+				"name": "UDC_GAUSSGLOBALCODE",
+				"type": "UTF8"
+			},
+			{
+				"name": "UDC_BFDP",
+				"type": "UTF8"
+			},
+			{
+				"name": "UDC_GPS",
+				"type": "UTF8"
+			},
+			{
+				"name": "UDC_SUPMFG",
+				"type": "UTF8"
+			},
+			{
+				"name": "UDC_PACKMFG",
+				"type": "UTF8"
+			},
+			{
+				"name": "UDC_ACTIVE",
+				"type": "BOOLEAN"
+			},
+			{
+				"name": "UDC_GRPDVLP",
+				"type": "UTF8"
+			},
+			{
+				"name": "UDC_TABLET_SHAPE",
+				"type": "UTF8"
+			},
+			{
+				"name": "UDC_TXF_CONSTRAINED_DEMAND",
+				"type": "BOOLEAN"
+			},
+			{
+				"name": "UDC_SBU_YPLUS1",
+				"type": "UTF8"
+			},
+			{
+				"name": "UDC_SBU_DESC_YPLUS1",
+				"type": "UTF8"
+			},
+			{
+				"name": "UDC_GBU_YPLUS1",
+				"type": "UTF8"
+			},
+			{
+				"name": "UDC_BUSINESS_LINE",
+				"type": "UTF8"
+			},
+			{
+				"name": "UDC_SCM_CATEGORY",
+				"type": "UTF8"
+			},
+			{
+				"name": "UDC_DOSAGE_UOM",
+				"type": "UTF8"
+			},
+			{
+				"name": "UDC_API_DOSAGE",
+				"type": "DECIMAL",
+				"precision": 38,
+				"scale": 10
+			},
+			{
+				"name": "UDC_PLNBUSLINE",
+				"type": "UTF8"
+			},
+			{
+				"name": "UDC_PLNBUSFIELD",
+				"type": "UTF8"
+			},
+			{
+				"name": "UDC_PLNBUSUNIT",
+				"type": "UTF8"
+			},
+			{
+				"name": "UDC_BUSINESS_FIELD",
+				"type": "UTF8"
+			},
+			{
+				"name": "UDC_BUSINESS_UNIT",
+				"type": "UTF8"
+			},
+			{
+				"name": "UDC_SCCATEGORY",
+				"type": "UTF8"
+			},
+			{
+				"name": "UDC_DEVICETYPE",
+				"type": "UTF8"
+			},
+			{
+				"name": "UDC_BUSDIV",
+				"type": "UTF8"
+			},
+			{
+				"name": "UDC_ISDUMMY",
+				"type": "UTF8"
+			},
+			{
+				"name": "UDC_FCSTTXFSTOP",
+				"type": "DATE"
+			},
+			{
+				"name": "UDC_UOM",
+				"type": "UTF8"
+			},
+			{
+				"name": "UDC_LOCAL_BRAND",
+				"type": "UTF8"
+			},
+			{
+				"name": "UDC_UNITPERPALLET",
+				"type": "DECIMAL",
+				"precision": 38,
+				"scale": 10
+			},
+			{
+				"name": "UDC_WEIGHT",
+				"type": "DECIMAL",
+				"precision": 38,
+				"scale": 10
+			}
+		]
+	},
+	"type": "Microsoft.DataFactory/factories/datasets"
+}

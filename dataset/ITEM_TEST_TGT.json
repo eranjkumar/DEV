@@ -1,0 +1,670 @@
+{
+	"name": "ITEM_TEST_TGT",
+	"properties": {
+		"linkedServiceName": {
+			"referenceName": "LS_SNOWFLAKE_V2",
+			"type": "LinkedServiceReference"
+		},
+		"annotations": [],
+		"type": "SnowflakeV2Table",
+		"schema": [
+			{
+				"name": "ITEMID",
+				"type": "VARCHAR"
+			},
+			{
+				"name": "ITEMDESCRIPTION",
+				"type": "VARCHAR"
+			},
+			{
+				"name": "ITEMTYPE",
+				"type": "VARCHAR"
+			},
+			{
+				"name": "LEVEL4MEMBERID",
+				"type": "VARCHAR"
+			},
+			{
+				"name": "LEVEL4MEMBERDESCRIPTION",
+				"type": "VARCHAR"
+			},
+			{
+				"name": "LEVEL3MEMBERID",
+				"type": "VARCHAR"
+			},
+			{
+				"name": "LEVEL3MEMBERDESCRIPTION",
+				"type": "VARCHAR"
+			},
+			{
+				"name": "LEVEL2MEMBERID",
+				"type": "VARCHAR"
+			},
+			{
+				"name": "LEVEL2MEMBERDESCRIPTION",
+				"type": "VARCHAR"
+			},
+			{
+				"name": "LEVEL1MEMBERID",
+				"type": "VARCHAR"
+			},
+			{
+				"name": "LEVEL1MEMBERDESCRIPTION",
+				"type": "VARCHAR"
+			},
+			{
+				"name": "ATTRSUPPLYTYPE",
+				"type": "VARCHAR"
+			},
+			{
+				"name": "ATTRORIGITEM",
+				"type": "VARCHAR"
+			},
+			{
+				"name": "ATTRVERSION",
+				"type": "VARCHAR"
+			},
+			{
+				"name": "UNITCOST",
+				"type": "FLOAT"
+			},
+			{
+				"name": "ISNEWITEM",
+				"type": "BOOLEAN"
+			},
+			{
+				"name": "ITEMCLASS",
+				"type": "VARCHAR"
+			},
+			{
+				"name": "HANDLINGINSTRUCTIONCODE",
+				"type": "VARCHAR"
+			},
+			{
+				"name": "ITEMFAMILYGROUP",
+				"type": "VARCHAR"
+			},
+			{
+				"name": "VOLUME",
+				"type": "NUMBER",
+				"precision": 12,
+				"scale": 4
+			},
+			{
+				"name": "UNITSPERPALLET",
+				"type": "NUMBER",
+				"precision": 12,
+				"scale": 4
+			},
+			{
+				"name": "ITEMPRIORITYATTRIB",
+				"type": "VARCHAR"
+			},
+			{
+				"name": "UNITCONV1",
+				"type": "FLOAT"
+			},
+			{
+				"name": "UNITCONV2",
+				"type": "FLOAT"
+			},
+			{
+				"name": "UNITCONV3",
+				"type": "FLOAT"
+			},
+			{
+				"name": "UNITCONV4",
+				"type": "FLOAT"
+			},
+			{
+				"name": "GROSSWEIGHT",
+				"type": "NUMBER",
+				"precision": 12,
+				"scale": 4
+			},
+			{
+				"name": "BASEUOM",
+				"type": "VARCHAR"
+			},
+			{
+				"name": "USEDYNDEPFROMITEMLOCDEPLOYMENTPARAM",
+				"type": "BOOLEAN"
+			},
+			{
+				"name": "USETRANSPORTCOSTFROMDYNDEPSRC",
+				"type": "BOOLEAN"
+			},
+			{
+				"name": "DYNDEPDECIMALS",
+				"type": "NUMBER",
+				"precision": 38,
+				"scale": 0
+			},
+			{
+				"name": "DYNDEPOPTION",
+				"type": "NUMBER",
+				"precision": 38,
+				"scale": 0
+			},
+			{
+				"name": "DYNDEPPUSHOPTION",
+				"type": "NUMBER",
+				"precision": 38,
+				"scale": 0
+			},
+			{
+				"name": "DYNDEPQTY",
+				"type": "FLOAT"
+			},
+			{
+				"name": "OPTIONCLASS",
+				"type": "VARCHAR"
+			},
+			{
+				"name": "ITEMSOURCINGSTRATEGY",
+				"type": "VARCHAR"
+			},
+			{
+				"name": "OPTIONS",
+				"type": "VARCHAR"
+			},
+			{
+				"name": "DISABLENETTINGPLANNING",
+				"type": "VARCHAR"
+			},
+			{
+				"name": "ISSHORTLIFECYCLEITEM",
+				"type": "BOOLEAN"
+			},
+			{
+				"name": "ISPARENTITEM",
+				"type": "BOOLEAN"
+			},
+			{
+				"name": "UDC_TA",
+				"type": "VARCHAR"
+			},
+			{
+				"name": "UDC_ACTIVEPRINCIPLE",
+				"type": "VARCHAR"
+			},
+			{
+				"name": "UDC_CONTAINER",
+				"type": "VARCHAR"
+			},
+			{
+				"name": "UDC_MARKET",
+				"type": "VARCHAR"
+			},
+			{
+				"name": "UDC_MFGSOURCE",
+				"type": "VARCHAR"
+			},
+			{
+				"name": "UDC_PACKSIZE",
+				"type": "NUMBER",
+				"precision": 12,
+				"scale": 0
+			},
+			{
+				"name": "UDC_PHARMAFORM",
+				"type": "VARCHAR"
+			},
+			{
+				"name": "UDC_PRODUCTTYPE",
+				"type": "VARCHAR"
+			},
+			{
+				"name": "UDC_ITEMSTATUS",
+				"type": "VARCHAR"
+			},
+			{
+				"name": "UDC_EQUNITS",
+				"type": "NUMBER",
+				"precision": 30,
+				"scale": 2
+			},
+			{
+				"name": "UDC_BRAND",
+				"type": "VARCHAR"
+			},
+			{
+				"name": "UDC_TADESCR",
+				"type": "VARCHAR"
+			},
+			{
+				"name": "UDC_BRANDDESCR",
+				"type": "VARCHAR"
+			},
+			{
+				"name": "UDC_STRENGTHDESCR",
+				"type": "VARCHAR"
+			},
+			{
+				"name": "UDC_MP_RELEVANT",
+				"type": "VARCHAR"
+			},
+			{
+				"name": "UDC_FAMILY",
+				"type": "VARCHAR"
+			},
+			{
+				"name": "UDC_CORPDESCR",
+				"type": "VARCHAR"
+			},
+			{
+				"name": "UDC_SOPSW",
+				"type": "BOOLEAN"
+			},
+			{
+				"name": "UDC_TPREGION",
+				"type": "VARCHAR"
+			},
+			{
+				"name": "UDC_DIVISION",
+				"type": "VARCHAR"
+			},
+			{
+				"name": "UDC_MULTIDEST",
+				"type": "BOOLEAN"
+			},
+			{
+				"name": "UDC_MULTISOURCE",
+				"type": "BOOLEAN"
+			},
+			{
+				"name": "UDC_BRANDPRIO",
+				"type": "NUMBER",
+				"precision": 22,
+				"scale": 0
+			},
+			{
+				"name": "UDC_ITEMEXCEPTION",
+				"type": "NUMBER",
+				"precision": 22,
+				"scale": 0
+			},
+			{
+				"name": "UDC_PACK_SITE",
+				"type": "VARCHAR"
+			},
+			{
+				"name": "UDC_PROD_SITE",
+				"type": "VARCHAR"
+			},
+			{
+				"name": "UDC_API_SITE",
+				"type": "VARCHAR"
+			},
+			{
+				"name": "UDC_GPSNAME",
+				"type": "VARCHAR"
+			},
+			{
+				"name": "UDC_GROUPING",
+				"type": "VARCHAR"
+			},
+			{
+				"name": "UDC_NBUNITSPERHNDLG",
+				"type": "NUMBER",
+				"precision": 12,
+				"scale": 0
+			},
+			{
+				"name": "UDC_NBHNDLGPERPALLET",
+				"type": "NUMBER",
+				"precision": 12,
+				"scale": 0
+			},
+			{
+				"name": "UDC_NBHNDLGPERLAYER",
+				"type": "NUMBER",
+				"precision": 12,
+				"scale": 0
+			},
+			{
+				"name": "UDC_PACKMODULE",
+				"type": "VARCHAR"
+			},
+			{
+				"name": "UDC_STORAGECONDITION",
+				"type": "VARCHAR"
+			},
+			{
+				"name": "UDC_GRP1",
+				"type": "VARCHAR"
+			},
+			{
+				"name": "UDC_GRP2",
+				"type": "VARCHAR"
+			},
+			{
+				"name": "UDC_GRP3",
+				"type": "VARCHAR"
+			},
+			{
+				"name": "UDC_GRP4",
+				"type": "VARCHAR"
+			},
+			{
+				"name": "UDC_CREATEDBY",
+				"type": "VARCHAR"
+			},
+			{
+				"name": "UDC_CREATIONDATE",
+				"type": "DATE"
+			},
+			{
+				"name": "UDC_LASTUPDATEDATE",
+				"type": "DATE"
+			},
+			{
+				"name": "UDC_LASTUPDATEDBY",
+				"type": "VARCHAR"
+			},
+			{
+				"name": "UDC_FACTOR",
+				"type": "NUMBER",
+				"precision": 14,
+				"scale": 4
+			},
+			{
+				"name": "UDC_ACTIVITY",
+				"type": "VARCHAR"
+			},
+			{
+				"name": "UDC_CRITICITY",
+				"type": "NUMBER",
+				"precision": 30,
+				"scale": 2
+			},
+			{
+				"name": "UDC_NPISW",
+				"type": "BOOLEAN"
+			},
+			{
+				"name": "UDC_SIZETOBRAND",
+				"type": "NUMBER",
+				"precision": 18,
+				"scale": 6
+			},
+			{
+				"name": "UDC_ARCPROJSTATICSW",
+				"type": "BOOLEAN"
+			},
+			{
+				"name": "UDC_PACKSPERPALLET",
+				"type": "NUMBER",
+				"precision": 38,
+				"scale": 5
+			},
+			{
+				"name": "UDC_RESTRICT_SW",
+				"type": "BOOLEAN"
+			},
+			{
+				"name": "UDC_STACKINGPERPACK",
+				"type": "NUMBER",
+				"precision": 38,
+				"scale": 0
+			},
+			{
+				"name": "UDC_NBTABSPERBLISTER",
+				"type": "NUMBER",
+				"precision": 22,
+				"scale": 0
+			},
+			{
+				"name": "UDC_MTS_MTO",
+				"type": "NUMBER",
+				"precision": 30,
+				"scale": 2
+			},
+			{
+				"name": "UDC_NEW",
+				"type": "BOOLEAN"
+			},
+			{
+				"name": "UDC_STRENGTH",
+				"type": "VARCHAR"
+			},
+			{
+				"name": "UDC_DOSETOMCG",
+				"type": "NUMBER",
+				"precision": 38,
+				"scale": 10
+			},
+			{
+				"name": "UDC_DOSETOIU",
+				"type": "NUMBER",
+				"precision": 38,
+				"scale": 0
+			},
+			{
+				"name": "UDC_DMDUNITLEVEL",
+				"type": "NUMBER",
+				"precision": 38,
+				"scale": 0
+			},
+			{
+				"name": "UDC_BOXTODOSES",
+				"type": "NUMBER",
+				"precision": 38,
+				"scale": 0
+			},
+			{
+				"name": "UDC_PACKSIZEDESCR",
+				"type": "VARCHAR"
+			},
+			{
+				"name": "UDC_FAMILYGRPDESCR",
+				"type": "VARCHAR"
+			},
+			{
+				"name": "UDC_LOCALPRODUCTSW",
+				"type": "VARCHAR"
+			},
+			{
+				"name": "UDC_SIZETOSTRENGTH",
+				"type": "NUMBER",
+				"precision": 38,
+				"scale": 10
+			},
+			{
+				"name": "UDC_LRPDUMMY",
+				"type": "BOOLEAN"
+			},
+			{
+				"name": "UDC_LRPPRODLEVEL",
+				"type": "VARCHAR"
+			},
+			{
+				"name": "UDC_LRPSCOPE",
+				"type": "BOOLEAN"
+			},
+			{
+				"name": "UDC_GPH",
+				"type": "VARCHAR"
+			},
+			{
+				"name": "UDC_GPHDESCR",
+				"type": "VARCHAR"
+			},
+			{
+				"name": "UDC_PACKAGINGSTYLE",
+				"type": "VARCHAR"
+			},
+			{
+				"name": "UDC_ACTIVEINGR",
+				"type": "VARCHAR"
+			},
+			{
+				"name": "UDC_SUPPLIERNAME",
+				"type": "VARCHAR"
+			},
+			{
+				"name": "UDC_PRODCONFIG",
+				"type": "VARCHAR"
+			},
+			{
+				"name": "UDC_PRODMACROCONFIG",
+				"type": "VARCHAR"
+			},
+			{
+				"name": "UDC_MACROCONFIGDESCR",
+				"type": "VARCHAR"
+			},
+			{
+				"name": "UDC_DMDUNITEXCEPTION",
+				"type": "NUMBER",
+				"precision": 38,
+				"scale": 0
+			},
+			{
+				"name": "UDC_PROJECTREF",
+				"type": "VARCHAR"
+			},
+			{
+				"name": "UDC_SECPACKPERBOX",
+				"type": "NUMBER",
+				"precision": 38,
+				"scale": 10
+			},
+			{
+				"name": "UDC_PACKERMFG",
+				"type": "VARCHAR"
+			},
+			{
+				"name": "UDC_GAUSSGLOBALCODE",
+				"type": "VARCHAR"
+			},
+			{
+				"name": "UDC_BFDP",
+				"type": "VARCHAR"
+			},
+			{
+				"name": "UDC_GPS",
+				"type": "VARCHAR"
+			},
+			{
+				"name": "UDC_SUPMFG",
+				"type": "VARCHAR"
+			},
+			{
+				"name": "UDC_PACKMFG",
+				"type": "VARCHAR"
+			},
+			{
+				"name": "UDC_ACTIVE",
+				"type": "BOOLEAN"
+			},
+			{
+				"name": "UDC_GRPDVLP",
+				"type": "VARCHAR"
+			},
+			{
+				"name": "UDC_TABLET_SHAPE",
+				"type": "VARCHAR"
+			},
+			{
+				"name": "UDC_TXF_CONSTRAINED_DEMAND",
+				"type": "BOOLEAN"
+			},
+			{
+				"name": "UDC_SBU_YPLUS1",
+				"type": "VARCHAR"
+			},
+			{
+				"name": "UDC_SBU_DESC_YPLUS1",
+				"type": "VARCHAR"
+			},
+			{
+				"name": "UDC_GBU_YPLUS1",
+				"type": "VARCHAR"
+			},
+			{
+				"name": "UDC_BUSINESS_LINE",
+				"type": "VARCHAR"
+			},
+			{
+				"name": "UDC_SCM_CATEGORY",
+				"type": "VARCHAR"
+			},
+			{
+				"name": "UDC_DOSAGE_UOM",
+				"type": "VARCHAR"
+			},
+			{
+				"name": "UDC_API_DOSAGE",
+				"type": "NUMBER",
+				"precision": 38,
+				"scale": 10
+			},
+			{
+				"name": "UDC_PLNBUSLINE",
+				"type": "VARCHAR"
+			},
+			{
+				"name": "UDC_PLNBUSFIELD",
+				"type": "VARCHAR"
+			},
+			{
+				"name": "UDC_PLNBUSUNIT",
+				"type": "VARCHAR"
+			},
+			{
+				"name": "UDC_BUSINESS_FIELD",
+				"type": "VARCHAR"
+			},
+			{
+				"name": "UDC_BUSINESS_UNIT",
+				"type": "VARCHAR"
+			},
+			{
+				"name": "UDC_SCCATEGORY",
+				"type": "VARCHAR"
+			},
+			{
+				"name": "UDC_DEVICETYPE",
+				"type": "VARCHAR"
+			},
+			{
+				"name": "UDC_BUSDIV",
+				"type": "VARCHAR"
+			},
+			{
+				"name": "UDC_ISDUMMY",
+				"type": "VARCHAR"
+			},
+			{
+				"name": "UDC_FCSTTXFSTOP",
+				"type": "DATE"
+			},
+			{
+				"name": "UDC_UOM",
+				"type": "VARCHAR"
+			},
+			{
+				"name": "UDC_LOCAL_BRAND",
+				"type": "VARCHAR"
+			},
+			{
+				"name": "UDC_UNITPERPALLET",
+				"type": "NUMBER",
+				"precision": 38,
+				"scale": 10
+			},
+			{
+				"name": "UDC_WEIGHT",
+				"type": "NUMBER",
+				"precision": 38,
+				"scale": 10
+			}
+		],
+		"typeProperties": {
+			"schema": "TRAINING",
+			"table": "ITEM_TEST"
+		}
+	},
+	"type": "Microsoft.DataFactory/factories/datasets"
+}
